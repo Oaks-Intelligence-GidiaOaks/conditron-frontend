@@ -1,0 +1,47 @@
+@use "@/variable.scss" as var;
+
+.dashboard {
+  width: 100%;
+  .dashboard_wrap {
+    padding-top: 105px;
+
+    .dashboard_sidebar {
+      width: 20%;
+      position: fixed;
+      transition: all 0.3s linear;
+      background-color: #fff;
+      top: 85px;
+      z-index: 2;
+      overflow-y: scroll;
+      height: 90%;
+
+      &::-webkit-scrollbar {
+        width: 0.1px;
+      }
+
+      @media (max-width: 991px) {
+        width: 40%;
+        transform: translateX(-500px);
+      }
+
+      @media (max-width: 467px) {
+        width: 60%;
+      }
+    }
+
+    .dashboard_sidebar_open {
+      transform: translateX(0px);
+    }
+
+    .dashboard_content {
+      width: 80%;
+      margin-left: 20%;
+
+      @media (max-width: 991px) {
+        width: 100%;
+        margin-left: 0;
+        // padding: 20px;
+      }
+    }
+  }
+}

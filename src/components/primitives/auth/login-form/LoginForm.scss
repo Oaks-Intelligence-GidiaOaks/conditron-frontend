@@ -1,0 +1,48 @@
+@use "@/variable" as var;
+
+.auth_form {
+  width: 100%;
+  max-width: 461px;
+  padding: 20px;
+  border-radius: 12px;
+  z-index: 2;
+
+  .auth_form_title {
+    color: var.$text-black;
+    width: 100%;
+    font-size: 32px;
+    margin-bottom: 9px;
+
+    @media (max-width: 991px) {
+      font-size: 25px;
+    }
+  }
+
+  .auth_form_sub_title {
+    @extend .auth_form_title;
+    font-size: 17px;
+    margin-bottom: 42px;
+    color: #4c5563;
+
+    @media (max-width: 991px) {
+      font-size: 15px;
+    }
+  }
+
+  .auth_button_wrap {
+    margin-top: 30px;
+  }
+
+  .footer_terms {
+    padding: 10px 0px;
+    color: #605f5f;
+    font-size: 12px;
+    line-height: 28.08px;
+    bottom: 0;
+    margin-bottom: -50px;
+
+    @media (max-width: 991px) {
+      font-size: 10px;
+    }
+  }
+}

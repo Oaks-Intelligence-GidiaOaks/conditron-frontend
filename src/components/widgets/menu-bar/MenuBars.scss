@@ -1,0 +1,34 @@
+@use "@/variable" as var;
+
+.menu_bar {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  width: 24px;
+  height: 20px;
+  cursor: pointer;
+
+  .menu_bar_line {
+    width: 20px;
+    height: 2px;
+    background-color: var.$text-black;
+    transition: all 0.3s ease-in-out;
+    margin-bottom: 4px;
+    border-radius: 4px;
+  }
+
+  &.open {
+    .menu_bar_line:first-child {
+      transform: rotate(45deg) translate(4.3px, 4.3px);
+    }
+
+    .menu_bar_line:nth-child(2) {
+      opacity: 0;
+      transition: none;
+    }
+
+    .menu_bar_line:last-child {
+      transform: rotate(-45deg) translate(4.3px, -4.3px);
+    }
+  }
+}
