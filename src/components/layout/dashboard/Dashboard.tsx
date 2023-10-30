@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import "./Dashboard.scss";
-import { DashboardSidebar, DashboardHeader } from "@/components";
+import { DashboardHeader } from "@/components";
 
 interface DashboardProp {
   component: React.ElementType;
@@ -18,7 +18,7 @@ const Dashboard = ({ component: Component }: DashboardProp) => {
             "menuIsOpen" && "dashboard_sidebar_open"
           }`}
         >
-          <DashboardSidebar />
+          <div />
         </div>
         <div className="dashboard_content">
           <Component />
