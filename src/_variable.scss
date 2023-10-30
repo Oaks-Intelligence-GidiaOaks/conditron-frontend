@@ -1,0 +1,111 @@
+$green: #46ac46;
+$text-black: #303841;
+$orange: #e78b3d;
+
+.center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.start {
+  display: flex;
+  align-items: flex-start;
+  justify-content: flex-start;
+}
+
+.end {
+  display: flex;
+  align-items: flex-end;
+  justify-content: flex-end;
+}
+
+.between {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.mb_10 {
+  margin-bottom: 10px;
+}
+
+.mt_10 {
+  margin-top: 10px;
+}
+
+.flex {
+  display: flex;
+}
+
+.text {
+  color: #212121;
+  font-size: 15px;
+  line-height: 150%;
+
+  @media (max-width: 991px) {
+    font-size: 12px;
+  }
+}
+
+.sub_heading {
+  color: #143b76;
+  font-size: 24px;
+  font-weight: 500;
+
+  @media (max-width: 991px) {
+    font-size: 18px;
+  }
+}
+
+.col {
+  flex-direction: column;
+}
+
+.wrap {
+  flex-wrap: wrap;
+}
+
+.card_title {
+  color: white;
+  font-size: 40px;
+  font-family: "Oswald", sans-serif;
+}
+
+.card_text {
+  color: white;
+  font-size: 16px;
+  letter-spacing: 2px;
+  font-weight: 300;
+}
+
+@mixin mq($breakpoint) {
+  $breakpoints: (
+    "sm": 480px,
+    "md": 768px,
+    "lg": 991px,
+    "xl": 1200px,
+  );
+
+  $breakpoint-value: map-get($breakpoints, $breakpoint);
+
+  @media (max-width: $breakpoint-value) {
+    @content;
+  }
+}
+
+.mob {
+  display: none;
+
+  @include mq("lg") {
+    display: block;
+  }
+}
+
+.desk {
+  display: block;
+
+  @include mq("lg") {
+    display: none;
+  }
+}

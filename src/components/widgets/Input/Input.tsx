@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import "./Input.scss";
-import { eye, info_circle, calendar, eyeclose } from "@/assets";
+// import { eye, info_circle, calendar, eyeclose } from "@/assets";
 import { FieldInputProps, FieldMetaState } from "react-final-form";
 // import DatePicker from "react-datepicker";
 // import "react-datepicker/dist/react-datepicker.css";
@@ -66,7 +66,7 @@ const Input = ({
         <div className="tooltip">
           {tooltip && (
             <>
-              <img src={info_circle} alt="icon" />
+              <img src={"info_circle"} alt="icon" />
               <div className="tooltip_pop_up">{tooltip}</div>
             </>
           )}
@@ -131,14 +131,14 @@ const Input = ({
         {password && (
           <div className="date center" onClick={togglePasswordType}>
             <img
-              src={passwordType === "password" ? eyeclose : eye}
+              src={passwordType === "password" ? "eyeclose" : "eye"}
               alt="icon"
             />
           </div>
         )}
         {date && (
           <div className="date end">
-            <img src={calendar} alt="icon" />
+            <img src={"calendar"} alt="icon" />
           </div>
         )}
       </div>

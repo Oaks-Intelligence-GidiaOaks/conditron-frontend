@@ -2,7 +2,7 @@ import React from "react";
 import "./DashboardHeader.scss";
 import { Link } from "react-router-dom";
 import { MenuBars } from "@/components";
-import { settings, avartar } from "@/assets";
+// import { settings, avartar } from "@/assets";
 
 interface DashboardHeaderProps {
   menuIsOpen: boolean;
@@ -25,7 +25,7 @@ const DashboardHeader = ({
           className="dashboard_header_textbtn_wrap center link"
         >
           <img
-            src={"user?.photo_url" || avartar}
+            src={"user?.photo_url" || "avartar"}
             alt="icon"
             className="dashboard_avartar"
           />
@@ -33,7 +33,7 @@ const DashboardHeader = ({
           {/* <img src={down} alt="icon" className="dashboard_down_icon" /> */}
         </Link>
         <Link to={"/my-account"} className="link">
-          <img src={settings} alt="icon" className="dashboard_icon" />
+          <img src={"settings"} alt="icon" className="dashboard_icon" />
         </Link>
         {/* <a className="link">
           <Notification />
