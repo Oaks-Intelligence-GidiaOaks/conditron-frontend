@@ -1,0 +1,38 @@
+.dashboard-crumb {
+  background: #fff !important;
+}
+.crumb-title {
+  color: #000;
+  font-family: Poppins;
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 600;
+  line-height: normal;
+}
+.crumb-text {
+  color: #8c8c8c;
+  font-family: Poppins;
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+}
+.select-box {
+  border-radius: 8px;
+  background: #f2f2f2;
+  color: #000;
+  font-feature-settings: "clig" off, "liga" off;
+  font-family: Poppins;
+  font-size: 14.01px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+  width: 129.09px;
+  height: 45.031px;
+}
+.select-box:focus,
+.select-box {
+  border: none !important;
+  border-color: none !important;
+  box-shadow: none !important;
+}
