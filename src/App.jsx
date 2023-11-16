@@ -1,7 +1,12 @@
+import { BrowserRouter as Router } from "react-router-dom";
+import RouterConfig from "./routes/routeConfig";
+
 function App() {
   return (
     <>
-      <div className="text-center lead">New App created</div>
+      <Router>
+        <RouterConfig />
+      </Router>
     </>
   );
 }

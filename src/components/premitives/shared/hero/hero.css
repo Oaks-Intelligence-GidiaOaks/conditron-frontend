@@ -1,0 +1,27 @@
+.hero {
+  background: linear-gradient(180deg, #2d1573 0%, #060b27 100%);
+}
+.hero_text {
+  background: linear-gradient(180deg, #f6f6f7 0%, #7e808f 100%);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+@keyframes float {
+  0% {
+    transform: translate(0, 0);
+  }
+
+  50% {
+    transform: translate(15px, 15px);
+  }
+
+  100% {
+    transform: translate(0, 0);
+  }
+}
+
+.floating-image {
+  animation: float 2s infinite;
+}
