@@ -4,11 +4,10 @@
 }
 .search-input {
   background-color: rgba(238, 230, 226, 0.86) !important;
-  /* width: 90%; */
-  width: 619.43px !important;
-  height: 51px !important;
   flex-shrink: 0;
   color: #aeaeae !important;
+  width: 619.43px !important;
+  height: 51px !important;
   font-family: Poppins;
   font-size: 16px !important;
   font-style: normal !important;
@@ -18,6 +17,7 @@
 .search-input-group {
   border-radius: 8px !important;
 }
+
 .serach-btn {
   background-color: rgba(238, 230, 226, 0.86) !important;
 }

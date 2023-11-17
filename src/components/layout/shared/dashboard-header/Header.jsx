@@ -1,17 +1,21 @@
 import * as images from "../../../../assets";
-import "bootstrap/dist/css/bootstrap.min.css";
+import { FaSearch } from "react-icons/fa";
 import "./Header.css";
 
 function Header() {
   return (
     <section className="dashboard-nav">
       <div className="container-fluid">
-        <div className="d-flex ms-5 me-5 py-3 justify-content-between align-items-center">
-          <div className="">
-            <img src={images.dashboard_logo} alt="logo" className="img-fluid" />
+        <div className="d-flex py-3 ms-lg-5 me-lg-5 justify-content-between align-items-center">
+          <div className="ms-lg-5">
+            <img
+              src={images.dashboard_logo}
+              alt="logo"
+              className=" w-75 w-sm-25"
+            />
           </div>
           <div className="">
-            <div className="input-group search-input-group d-none d-md-flex">
+            <div className="input-group search-input-group d-none d-md-none d-lg-flex">
               <span
                 className="input-group-text serach-btn border-end-0"
                 id="basic-addon1"
@@ -26,18 +30,18 @@ function Header() {
                 aria-describedby="basic-addon1"
               />
             </div>
-            <button className="btn d-block d-sm-none">
-              <img src={images.search} alt="small icon" />
+            <button className="btn d-block d-sm-inline d-md-inline d-lg-none">
+              <FaSearch className="search-icon" />
             </button>
           </div>
-          <div className="">
-            <img src={images.refresh} alt="refresh" />
+          <div className="me-lg-5">
+            <img src={images.refresh} className="d-none" alt="refresh" />
             <img
               src={images.notification}
               alt="notification"
-              className="px-4"
+              className="px-lg-4 px-sm-5"
             />
-            <img src={images.avatar} alt="avatar" />
+            <img src={images.avatar} alt="avatar" className="" />
           </div>
         </div>
       </div>

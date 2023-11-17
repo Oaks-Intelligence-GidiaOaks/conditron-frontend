@@ -1,34 +1,38 @@
+import { useState } from "react";
 import * as images from "../../../../assets";
-import "bootstrap/dist/css/bootstrap.min.css";
 import "./BreadCrumb.css";
 
 function BreadCrumb() {
+  const [selectedOption, setSelectedOption] = useState("0");
+  const handleSelectChange = (event) => {
+    setSelectedOption(event.target.value);
+  };
   return (
     <section className="dashboard-crumb">
       <div className="container-fluid">
-        <div className="d-flex ms-5 me-5 py-3 justify-content-between align-items-center">
-          <div className="">
+        <div className="d-flex ms-lg-5 me-lg-5 py-3 justify-content-between align-items-center">
+          <div className="ms-lg-5">
             <h5 className="crumb-title">Home</h5>
-            <p className="crumb-text">
+            <p className="crumb-text d-none d-md-flex">
               Hi, welcome to asset risk assessment platform
             </p>
           </div>
-          <div className="">
-            <div className="d-flex">
-              <button className="btn">
-                <img src={images.logout} alt="" /> Logout
-              </button>
-              <select
-                className="form-select select-box me-3 ms-4"
-                aria-label="Default select example"
-              >
-                <option selected>My Assets</option>
-                <option value="1">One</option>
-                <option value="2">Two</option>
-                <option value="3">Three</option>
-              </select>
-              <img src={images.stats} alt="stats" />
-            </div>
+          <div className="d-flex me-lg-5">
+            <button className="btn">
+              <img src={images.logout} alt="" /> Logout
+            </button>
+            <select
+              className="form-select select-box me-lg-3 ms-lg-4"
+              aria-label="Default select example"
+              value={selectedOption}
+              onChange={handleSelectChange}
+            >
+              <option value="0">My Assets</option>
+              <option value="1">One</option>
+              <option value="2">Two</option>
+              <option value="3">Three</option>
+            </select>
+            <img src={images.stats} alt="stats" />
           </div>
         </div>
       </div>

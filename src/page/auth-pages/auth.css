@@ -1,0 +1,14 @@
+.verification {
+  color: #fb7f63;
+  font-feature-settings: "clig" off, "liga" off;
+  font-family: Potta One;
+  font-size: 32px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+}
+.contain-img {
+  width: 473px;
+  height: 315.333px;
+  flex-shrink: 0;
+}

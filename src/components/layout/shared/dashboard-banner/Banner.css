@@ -1,0 +1,48 @@
+.banner-container {
+  background-size: cover;
+  padding: 20px;
+  margin: 10px;
+  color: white;
+  /* width: 1297px; */
+  height: 222px;
+  border-radius: 14.01px;
+  background: linear-gradient(88deg, #e9e6ce 3.83%, #003b3b 87.25%);
+}
+.text-1 {
+  color: #1a1a1a;
+  font-feature-settings: "clig" off, "liga" off;
+  font-family: Poppins;
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+}
+.text-2 {
+  color: #003b3b;
+  font-feature-settings: "clig" off, "liga" off;
+  font-family: Poppins;
+  font-size: 32px;
+  font-style: normal;
+  font-weight: 600;
+  line-height: normal;
+}
+
+.text-3.red {
+  color: #e14237;
+  font-feature-settings: "clig" off, "liga" off;
+  font-family: Poppins;
+  font-size: 12px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+}
+
+.text-3.green {
+  color: #49aa4c;
+  font-feature-settings: "clig" off, "liga" off;
+  font-family: Poppins;
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+}

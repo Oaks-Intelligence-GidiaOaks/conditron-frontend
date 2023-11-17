@@ -1,1 +1,1 @@
-export { default as RegisterSuccessPage } from "./RegisterSuccessPage";
+export { default as RegisterSuccessPage } from "./auth-pages/RegisterSuccessPage";
