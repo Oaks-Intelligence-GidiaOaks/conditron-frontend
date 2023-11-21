@@ -10,7 +10,7 @@ function BreadCrumb() {
   return (
     <section className="dashboard-crumb">
       <div className="container-fluid">
-        <div className="d-flex ms-lg-5 me-lg-5 py-3 justify-content-between align-items-center">
+        <div className="d-flex ms-lg-3 me-lg-3 py-3 justify-content-between align-items-center">
           <div className="ms-lg-5">
             <h5 className="crumb-title">Home</h5>
             <p className="crumb-text d-none d-md-flex">

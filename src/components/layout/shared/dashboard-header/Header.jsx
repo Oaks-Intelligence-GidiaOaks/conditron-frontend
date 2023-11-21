@@ -6,7 +6,7 @@ function Header() {
   return (
     <section className="dashboard-nav">
       <div className="container-fluid">
-        <div className="d-flex py-3 ms-lg-5 me-lg-5 justify-content-between align-items-center">
+        <div className="d-flex py-3 ms-lg-3 me-lg-3 justify-content-between align-items-center">
           <div className="ms-lg-5">
             <img
               src={images.dashboard_logo}

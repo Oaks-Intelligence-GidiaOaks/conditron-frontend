@@ -1,0 +1,34 @@
+.bg-onboarding {
+  position: relative;
+  background: url("../../../../assets/images/banner.svg") center/cover no-repeat;
+  /* height: 134px; */
+}
+
+.bg-onboarding::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  /* height: 134px; */
+  z-index: -1;
+}
+
+.onboarding-title {
+  color: #f4efef;
+  text-align: center;
+  font-family: Lato;
+  font-size: 32px;
+  font-style: normal;
+  font-weight: 700;
+  line-height: normal;
+}
+.avatar-name,
+.avatar-status {
+  color: #f4efef;
+  font-family: Lato;
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 700;
+  line-height: normal;
+}

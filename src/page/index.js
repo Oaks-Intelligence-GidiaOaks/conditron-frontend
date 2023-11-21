@@ -1,1 +1,9 @@
 export { default as RegisterSuccessPage } from "./auth-pages/RegisterSuccessPage";
+export { default as LoginPage } from "./auth-pages/Login";
+export { default as RegisterPage } from "./auth-pages/Register";
+export { default as SetupPasswordPage } from "./auth-pages/SetupPassword";
+export { default as ProfileDetailsPage } from "./onboarding-pages/ProfileDetails";
+export { default as AddressDetailsPage } from "./onboarding-pages/AddressDetails";
+export { default as DocumentationPageOne } from "./onboarding-pages/DocumentationPageOne";
+export { default as DocumentationPageTwo } from "./onboarding-pages/DocumentationPageTwo";
+export { default as DashboardHomePage } from "./dashboard-pages/Index";

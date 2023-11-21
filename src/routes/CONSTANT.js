@@ -1,1 +1,14 @@
-export const LANDING = "/";
+export const LOGIN = "/";
+export const REGISTER = "/register";
+export const SETUP_PASSWORD = "/setup_password";
+// export const ONBOARDING_STEP = "/onboarding_steps";
+export const REGISTER_SUCCESS = "/register_success";
+export const ONBOARDING_PROFILE_DETAILS = "/onboarding_profile_details";
+export const ONBOARDING_ADDRESS_DETAILS = "/onboarding_address_details";
+export const DOCUMENTATION_PAGE_ONE = "/documentation_page_one";
+export const DOCUMENTATION_PAGE_TWO = "/documentation_page_two";
+export const DASHBOARD = "/dashboard";
+export const ASSETS = "/assets";
+export const RISK_ANALYSIS = "/risk_analysis";
+export const SETTINGS = "/settings";
+export const DOCS_CENTER = "/document_center";

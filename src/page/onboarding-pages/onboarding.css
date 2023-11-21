@@ -1,0 +1,60 @@
+.instructions-text {
+  color: #3d3a3a;
+  font-family: Lato;
+  font-size: 20px;
+  font-style: normal;
+  font-weight: 900;
+  line-height: normal;
+}
+.step-form-heading {
+  color: #003b3b;
+  text-align: center;
+  font-family: Lato;
+  font-size: 24px;
+  font-style: normal;
+  font-weight: 700;
+  line-height: normal;
+}
+.required {
+  color: #e14237;
+  font-family: Lato;
+  font-size: 20px;
+  font-style: normal;
+  font-weight: 700;
+  line-height: normal;
+}
+.form-label {
+  color: #3d3a3a;
+  font-family: Lato;
+  font-size: 15px;
+  font-style: normal;
+  font-weight: 700;
+  line-height: normal;
+}
+.input {
+  border-radius: 8px !important;
+  background: #fff !important;
+  border: 1px solid #bdbdc1 !important;
+  height: 50px !important;
+  color: #3d3a3a !important;
+  font-family: Lato;
+  font-size: 20px !important;
+  font-style: normal;
+  font-weight: 400 !important;
+  line-height: normal !important;
+}
+
+.input::placeholder {
+  color: #a59e9e !important;
+  font-family: Lato !important;
+  font-size: 16px !important;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+}
+
+.input:focus {
+  outline: none !important;
+  box-shadow: none !important;
+  border: 1px solid #bdbdc1 !important;
+}
