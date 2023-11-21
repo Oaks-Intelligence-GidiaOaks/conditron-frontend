@@ -1,0 +1,22 @@
+.active {
+  color: #099 !important;
+  font-feature-settings: "clig" off, "liga" off;
+  font-family: Poppins;
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 600;
+  line-height: normal;
+}
+.menu-links {
+  text-decoration: none;
+  color: rgba(0, 59, 59, 0.7);
+  font-feature-settings: "clig" off, "liga" off;
+  font-family: Poppins;
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: normal;
+}
+.menu-links:hover {
+  color: #099;
+}
