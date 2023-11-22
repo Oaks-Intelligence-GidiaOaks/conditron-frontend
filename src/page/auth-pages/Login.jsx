@@ -1,15 +1,33 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Form, Field } from "react-final-form";
 import { Link } from "react-router-dom";
 import * as routes from "../../routes/CONSTANT";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import "./auth.css";
 import { dashboard_logo } from "../../assets";
+import { useLoginUserMutation } from "../../service/user.service";
+import { useNavigate } from "react-router-dom";
+// import { useDispatch } from "react-redux";
+import rtkMutation from "../../utils/rtkMutation";
+import { formatErrorResponse } from "../../utils/formatErrorResponse";
 
 function Login() {
-  const onSubmit = (values) => {
+  const [loginUser, { isLoading, error, isSuccess }] = useLoginUserMutation({
+    provideTag: ["User"],
+  });
+
+  const navigate = useNavigate();
+
+  const onSubmit = async (values) => {
     console.log(values);
+    await rtkMutation(loginUser, values);
   };
+
+  useEffect(() => {
+    if (isSuccess) {
+      navigate("/dashboard");
+    }
+  }, [isSuccess, navigate]);
 
   const [showPassword, setShowPassword] = useState(false);
 
@@ -44,7 +62,7 @@ function Login() {
                   <div className="p-lg-4">
                     <Form
                       onSubmit={onSubmit}
-                      render={({ handleSubmit }) => (
+                      render={({ handleSubmit, submitting }) => (
                         <form onSubmit={handleSubmit}>
                           <div className="mb-3">
                             <label
@@ -95,12 +113,28 @@ function Login() {
                             </div>
                           </div>
 
+                          {error && (
+                            <div className="input_error text-danger text-center">
+                              {formatErrorResponse(error)}
+                            </div>
+                          )}
+
                           <div className="text-center">
                             <button
                               type="submit"
                               className="btn submit-btn mt-3"
                             >
-                              Confirm
+                              {submitting ? (
+                                <>
+                                  <span className="loading-dots">
+                                    <span className="loading-dots-dot"></span>
+                                    <span className="loading-dots-dot"></span>
+                                    <span className="loading-dots-dot"></span>
+                                  </span>
+                                </>
+                              ) : (
+                                "Confirm"
+                              )}
                             </button>
                           </div>
                         </form>

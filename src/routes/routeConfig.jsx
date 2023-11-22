@@ -10,14 +10,24 @@ import {
   DocumentationPageTwo,
   DashboardHomePage,
 } from "../page";
+import ProtectedRoute from "../components/protected/ProtectedRoute";
+import PublicRoute from "../components/protected/PublicRoute";
+
 import * as routes from "./CONSTANT";
 
 const RouterConfig = () => {
   return (
     <div>
       <Routes>
-        <Route path={routes.DASHBOARD} element={<DashboardHomePage />} />
-        <Route path={routes.LOGIN} element={<LoginPage />} />
+        <Route
+          path={routes.DASHBOARD}
+          element={<ProtectedRoute component={DashboardHomePage} />}
+        />
+        <Route
+          path={routes.LOGIN}
+          element={<PublicRoute component={LoginPage} />}
+        />
+
         <Route path={routes.REGISTER} element={<RegisterPage />} />
         <Route path={routes.SETUP_PASSWORD} element={<SetupPasswordPage />} />
         <Route
