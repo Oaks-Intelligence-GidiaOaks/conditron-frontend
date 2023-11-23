@@ -1,7 +1,10 @@
 import "./OnboardingBanner.css";
 import * as images from "../../../../assets";
+import { useSelector } from "react-redux";
 
 function OnboardingBanner() {
+  const state = useSelector((state) => state.register);
+
   return (
     <section className="bg-onboarding">
       <div className="container-fluid">
@@ -20,7 +23,9 @@ function OnboardingBanner() {
                 className="d-none d-md-flex d-lg-flex"
               />
               <div className="avatar pt-lg-2 ms-3">
-                <p className="avatar-name mb-1">Jeff Craftor</p>
+                <p className="avatar-name mb-1">
+                  {state.first_name} {state.last_name}
+                </p>
                 <p className="avatar-status">Incomplete profile</p>
               </div>
             </div>

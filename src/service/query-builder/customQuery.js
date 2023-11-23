@@ -1,8 +1,7 @@
 import { fetchBaseQuery } from "@reduxjs/toolkit/query/react";
-
 import enviroment from "../../configs/environment.config";
-import { updateUser, logoutUser } from "../../redux/slices/user.slice";
-import { openModal, closeComponentModal } from "../../redux/slices/modal.slice";
+import { logoutUser } from "../../redux/slices/user.slice";
+import { showAlert } from "../../static/alert";
 
 const baseQuery = fetchBaseQuery({
   baseUrl: enviroment.API_BASE_URL,
@@ -23,39 +22,37 @@ const customBaseQuery = async (args, api, extraOptions) => {
   // console.log(result, "res");
   if (result.error && result.error.status === 406) {
     api.dispatch(logoutUser());
-    api.dispatch(
-      openModal({
-        title: "Inactive for too long",
-        message: "Please login again to continue",
-        success: false,
-      })
+    showAlert(
+      "Inactive for too long",
+      "Please login again to continue",
+      "error"
     );
 
     return;
   } else if (result.error && result.error.status === 401) {
-    const refreshToken = api.getState().user.refreshToken;
-    const refreshResult = await baseQuery(
-      { url: "user/refresh_token", method: "POST", body: { refreshToken } },
-      api,
-      extraOptions
+    api.dispatch(logoutUser());
+    showAlert(
+      "Access Token Expired",
+      "Please login again to continue",
+      "error"
     );
 
-    if (refreshResult.data) {
-      api.dispatch(updateUser({ token: refreshResult.data.accessToken }));
-      result = await baseQuery(args, api, extraOptions);
-    } else if (refreshResult.error.status) {
-      api.dispatch(logoutUser());
-      api.dispatch(closeComponentModal());
-      api.dispatch(
-        openModal({
-          title: "Refresh Token Expired",
-          message: "Please login again to continue",
-          success: false,
-        })
-      );
-    } else {
-      api.dispatch(logoutUser);
-    }
+    // if (refreshResult.data) {
+    //   api.dispatch(updateUser({ token: refreshResult.data.accessToken }));
+    //   result = await baseQuery(args, api, extraOptions);
+    // } else if (refreshResult.error.status) {
+    //   api.dispatch(logoutUser());
+    //   api.dispatch(closeComponentModal());
+    //   api.dispatch(
+    //     openModal({
+    //       title: "Refresh Token Expired",
+    //       message: "Please login again to continue",
+    //       success: false,
+    //     })
+    //   );
+    // } else {
+    //   api.dispatch(logoutUser);
+    // }
   }
   return result;
 };

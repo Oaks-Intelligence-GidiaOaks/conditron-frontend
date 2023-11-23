@@ -1,17 +1,49 @@
 import { Form, Field } from "react-final-form";
 import { Link } from "react-router-dom";
 import * as routes from "../../routes/CONSTANT";
-// import Select from "react-select";
 import PhoneInput from "react-phone-input-2";
 import "react-phone-input-2/lib/style.css";
-// import CountryList from "react-select-country-list";
 import "./auth.css";
 import { dashboard_logo } from "../../assets";
+import { updateFormdata } from "../../redux/slices/register.slice";
+import { useDispatch } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import validate from "validate.js";
+import { showAlert } from "../../static/alert";
+import { useSelector } from "react-redux";
+
+const constraints = {
+  first_name: {
+    presence: true,
+  },
+  last_name: {
+    presence: true,
+  },
+  email: {
+    presence: true,
+    email: true,
+  },
+  phone_number: {
+    presence: true,
+  },
+};
 
 function Register() {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
   const onSubmit = (values) => {
     console.log(values);
+    dispatch(updateFormdata(values));
+    navigate(routes.SETUP_PASSWORD);
+    showAlert("Cool", "Enter a password to continue", "success");
   };
+
+  const validateForm = (values) => {
+    return validate(values, constraints) || {};
+  };
+
+  const state = useSelector((state) => state.register);
 
   return (
     <>
@@ -42,8 +74,10 @@ function Register() {
                   <div className="p-lg-4">
                     <Form
                       onSubmit={onSubmit}
-                      render={({ handleSubmit }) => (
-                        <form onSubmit={handleSubmit}>
+                      initialValues={state ? state : {}}
+                      validate={validateForm}
+                      render={({ handleSubmit, form, submitting }) => (
+                        <form onSubmit={handleSubmit} autoComplete="off">
                           <div className="mb-3">
                             <label
                               htmlFor="exampleFormControlInput1"
@@ -58,6 +92,12 @@ function Register() {
                               className="form-control shadow-none"
                               placeholder="Enter First Name"
                             />
+                            {form.getState().submitFailed &&
+                              form.getState().errors.first_name && (
+                                <span className="text-danger">
+                                  {form.getState().errors.first_name}
+                                </span>
+                              )}
                           </div>
                           <div className="mb-3">
                             <label
@@ -73,6 +113,12 @@ function Register() {
                               className="form-control shadow-none"
                               placeholder="Enter Last Name"
                             />
+                            {form.getState().submitFailed &&
+                              form.getState().errors.last_name && (
+                                <span className="text-danger">
+                                  {form.getState().errors.last_name}
+                                </span>
+                              )}
                           </div>
                           <div className="mb-3">
                             <label
@@ -88,6 +134,12 @@ function Register() {
                               className="form-control shadow-none"
                               placeholder="Enter email"
                             />
+                            {form.getState().submitFailed &&
+                              form.getState().errors.email && (
+                                <span className="text-danger">
+                                  {form.getState().errors.email}
+                                </span>
+                              )}
                           </div>
 
                           <div className="mb-3">
@@ -112,7 +164,7 @@ function Register() {
                               )}
                             /> */}
                             <Field
-                              name="phone"
+                              name="phone_number"
                               className="form-control shadow-none"
                               render={({ input }) => (
                                 <PhoneInput
@@ -124,9 +176,15 @@ function Register() {
                                 />
                               )}
                             />
+                            {form.getState().submitFailed &&
+                              form.getState().errors.phone_number && (
+                                <span className="text-danger">
+                                  {form.getState().errors.phone_number}
+                                </span>
+                              )}
                           </div>
 
-                          <div className="d-flex justify-content-between">
+                          {/* <div className="d-flex justify-content-between">
                             <button
                               type="submit"
                               className="btn submit-btn-cancel mt-3"
@@ -138,6 +196,26 @@ function Register() {
                               className="btn submit-btn mt-3"
                             >
                               Create
+                            </button>
+                          </div> */}
+
+                          <div className="text-center">
+                            <button
+                              type="submit"
+                              className="btn submit-btn mt-3"
+                              // disabled={submitting || pristine}
+                            >
+                              {submitting ? (
+                                <>
+                                  <span className="loading-dots">
+                                    <span className="loading-dots-dot"></span>
+                                    <span className="loading-dots-dot"></span>
+                                    <span className="loading-dots-dot"></span>
+                                  </span>
+                                </>
+                              ) : (
+                                "Create"
+                              )}
                             </button>
                           </div>
                         </form>

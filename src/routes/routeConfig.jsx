@@ -36,19 +36,19 @@ const RouterConfig = () => {
         />
         <Route
           path={routes.ONBOARDING_PROFILE_DETAILS}
-          element={<ProfileDetailsPage />}
+          element={<ProtectedRoute component={ProfileDetailsPage} />}
         />
         <Route
           path={routes.ONBOARDING_ADDRESS_DETAILS}
-          element={<AddressDetailsPage />}
+          element={<ProtectedRoute component={AddressDetailsPage} />}
         />
         <Route
           path={routes.DOCUMENTATION_PAGE_ONE}
-          element={<DocumentationPageOne />}
+          element={<ProtectedRoute component={DocumentationPageOne} />}
         />
         <Route
           path={routes.DOCUMENTATION_PAGE_TWO}
-          element={<DocumentationPageTwo />}
+          element={<ProtectedRoute component={DocumentationPageTwo} />}
         />
       </Routes>
     </div>

@@ -1,10 +1,33 @@
-import { useState } from "react";
-import { Form, Field } from "react-final-form";
+import { useState, useEffect, useMemo } from "react";
+import { Form, Field, FormSpy } from "react-final-form";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import "./auth.css";
 import { dashboard_logo } from "../../assets";
+import validate from "validate.js";
+import { updateFormdata } from "../../redux/slices/register.slice";
+import { useDispatch, useSelector } from "react-redux";
+import rtkMutation from "../../utils/rtkMutation";
+import { useRegisterUserMutation } from "../../service/user.service";
+import { showAlert } from "../../static/alert";
+import * as routes from "../../routes/CONSTANT";
+import { useNavigate, Link } from "react-router-dom";
 
-function Login() {
+const constraints = {
+  password: {
+    presence: true,
+    length: {
+      minimum: 6,
+    },
+  },
+  confirm_password: {
+    equality: "password",
+  },
+};
+
+function SetupPassword() {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
@@ -14,9 +37,47 @@ function Login() {
   const toggleConfirmPasswordVisibility = () => {
     setShowConfirmPassword(!showConfirmPassword);
   };
-  const onSubmit = (values) => {
-    console.log(values);
+
+  const [registerUser, { error, isSuccess }] = useRegisterUserMutation({
+    provideTag: ["User"],
+  });
+  const state = useSelector((state) => state.register);
+
+  const onSubmit = async (values) => {
+    try {
+      console.log(state);
+      await rtkMutation(registerUser, state);
+    } catch (error) {
+      // console.log(error);
+      showAlert("Oops", error.message || "An error occurred", "error");
+    }
   };
+
+  useEffect(() => {
+    if (isSuccess) {
+      showAlert("Cool", "Account created... let's know more", "success");
+      navigate(routes.ONBOARDING_PROFILE_DETAILS);
+    } else if (error) {
+      showAlert("Oops", error.data.message || "An error occurred", "error");
+      // console.log(error.data.message);
+    }
+  }, [error, isSuccess, navigate]);
+
+  const validateForm = (values) => {
+    return validate(values, constraints) || {};
+  };
+
+  const formSpyComponent = useMemo(
+    () => (
+      <FormSpy subscription={{ values: true }}>
+        {({ values }) => {
+          dispatch(updateFormdata(values));
+          return null;
+        }}
+      </FormSpy>
+    ),
+    [dispatch]
+  );
 
   return (
     <>
@@ -46,9 +107,12 @@ function Login() {
 
                   <div className="p-lg-4">
                     <Form
-                      onSubmit={onSubmit}
-                      render={({ handleSubmit }) => (
+                      onSubmit={(values, form) => onSubmit(values, form)}
+                      validate={validateForm}
+                      render={({ handleSubmit, form, submitting, values }) => (
                         <form onSubmit={handleSubmit}>
+                          {formSpyComponent}
+
                           <div className="mb-3">
                             <label
                               htmlFor="exampleFormControlInput1"
@@ -81,6 +145,12 @@ function Login() {
                                 </button>
                               </span>
                             </div>
+                            {form.getState().submitFailed &&
+                              form.getState().errors.password && (
+                                <span className="text-danger">
+                                  {form.getState().errors.password}
+                                </span>
+                              )}
                           </div>
                           <div className="mb-3">
                             <label
@@ -115,20 +185,42 @@ function Login() {
                                 </button>
                               </span>
                             </div>
+                            {form.getState().submitFailed &&
+                              form.getState().errors.confirm_password && (
+                                <span className="text-danger">
+                                  {form.getState().errors.confirm_password}
+                                </span>
+                              )}
                           </div>
 
                           <div className="text-center">
                             <button
                               type="submit"
                               className="btn submit-btn mt-3"
+                              // disabled={submitting || pristine}
                             >
-                              Confirm
+                              {submitting ? (
+                                <>
+                                  <span className="loading-dots">
+                                    <span className="loading-dots-dot"></span>
+                                    <span className="loading-dots-dot"></span>
+                                    <span className="loading-dots-dot"></span>
+                                  </span>
+                                </>
+                              ) : (
+                                "Confirm"
+                              )}
                             </button>
                           </div>
                         </form>
                       )}
                     />
                   </div>
+                  <p className="pt-4 text-center">
+                    <Link to={routes.REGISTER} className="link btn bg-light">
+                      Go Back
+                    </Link>
+                  </p>
                 </div>
               </div>
             </div>
@@ -139,4 +231,4 @@ function Login() {
   );
 }
 
-export default Login;
+export default SetupPassword;

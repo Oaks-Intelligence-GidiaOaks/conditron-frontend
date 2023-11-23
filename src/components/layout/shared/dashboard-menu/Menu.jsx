@@ -3,6 +3,10 @@ import { useState, useEffect } from "react";
 import { NavLink, useLocation } from "react-router-dom";
 import * as routes from "../../../../routes/CONSTANT";
 import "./Menu.css";
+import { useDispatch } from "react-redux";
+import { logoutUser } from "../../../../redux/slices/user.slice";
+import { clearFormData } from "../../../../redux/slices/register.slice";
+import { showAlert } from "../../../../static/alert";
 
 function Menu() {
   const [selectedOption, setSelectedOption] = useState("0");
@@ -18,6 +22,18 @@ function Menu() {
   }, [location]);
 
   console.log(pathname, "path");
+
+  const dispatch = useDispatch();
+
+  const handleLogout = () => {
+    dispatch(logoutUser());
+    dispatch(clearFormData());
+    showAlert(
+      "Pls come back again",
+      "You've ended your current session",
+      "success"
+    );
+  };
 
   return (
     <>
@@ -110,7 +126,7 @@ function Menu() {
                 />
                 Settings
               </NavLink>
-              <button className="btn">
+              <button className="btn" onClick={() => handleLogout()}>
                 <img src={images.logout} alt="" /> Logout
               </button>
             </div>

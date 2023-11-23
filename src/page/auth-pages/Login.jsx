@@ -10,6 +10,21 @@ import { useNavigate } from "react-router-dom";
 // import { useDispatch } from "react-redux";
 import rtkMutation from "../../utils/rtkMutation";
 import { formatErrorResponse } from "../../utils/formatErrorResponse";
+import validate from "validate.js";
+import { showAlert } from "../../static/alert";
+
+const constraints = {
+  email: {
+    presence: true,
+    email: true,
+  },
+  password: {
+    presence: true,
+    length: {
+      minimum: 6,
+    },
+  },
+};
 
 function Login() {
   const [loginUser, { isLoading, error, isSuccess }] = useLoginUserMutation({
@@ -19,13 +34,17 @@ function Login() {
   const navigate = useNavigate();
 
   const onSubmit = async (values) => {
-    console.log(values);
     await rtkMutation(loginUser, values);
+  };
+
+  const validateForm = (values) => {
+    return validate(values, constraints) || {};
   };
 
   useEffect(() => {
     if (isSuccess) {
-      navigate("/dashboard");
+      showAlert("", "Login Successful!", "success");
+      navigate(routes.DASHBOARD);
     }
   }, [isSuccess, navigate]);
 
@@ -62,7 +81,13 @@ function Login() {
                   <div className="p-lg-4">
                     <Form
                       onSubmit={onSubmit}
-                      render={({ handleSubmit, submitting }) => (
+                      validate={validateForm}
+                      render={({
+                        handleSubmit,
+                        form,
+                        submitting,
+                        pristine,
+                      }) => (
                         <form onSubmit={handleSubmit}>
                           <div className="mb-3">
                             <label
@@ -78,6 +103,12 @@ function Login() {
                               className="form-control shadow-none"
                               placeholder="Enter Email"
                             />
+                            {form.getState().submitFailed &&
+                              form.getState().errors.email && (
+                                <span className="text-danger">
+                                  {form.getState().errors.email}
+                                </span>
+                              )}
                           </div>
                           <div className="mb-3">
                             <label
@@ -111,6 +142,12 @@ function Login() {
                                 </button>
                               </span>
                             </div>
+                            {form.getState().submitFailed &&
+                              form.getState().errors.password && (
+                                <span className="text-danger">
+                                  {form.getState().errors.password}
+                                </span>
+                              )}
                           </div>
 
                           {error && (
@@ -123,6 +160,7 @@ function Login() {
                             <button
                               type="submit"
                               className="btn submit-btn mt-3"
+                              // disabled={submitting || pristine}
                             >
                               {submitting ? (
                                 <>

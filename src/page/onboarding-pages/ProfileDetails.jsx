@@ -2,10 +2,26 @@ import { OnboardingBanner } from "../../components/layout";
 import * as images from "../../assets";
 import { Form, Field } from "react-final-form";
 import "./onboarding.css";
+import { useDispatch } from "react-redux";
+import { logoutUser } from "../../redux/slices/user.slice";
+import { clearFormData } from "../../redux/slices/register.slice";
+import { showAlert } from "../../static/alert";
 
 function ProfileDetails() {
+  const dispatch = useDispatch();
+
   const onSubmit = (values) => {
     console.log(values);
+  };
+
+  const handleLogout = () => {
+    dispatch(logoutUser());
+    dispatch(clearFormData());
+    showAlert(
+      "Pls come back again",
+      "You've ended your current session",
+      "success"
+    );
   };
 
   return (
@@ -19,7 +35,7 @@ function ProfileDetails() {
             </button>
           </div>
           <div className="d-flex">
-            <button className="btn">
+            <button className="btn" onClick={() => handleLogout()}>
               <img src={images.logout} alt="" /> Log out
             </button>
           </div>
@@ -53,7 +69,7 @@ function ProfileDetails() {
                         Entity name <span className="required">*</span>
                       </label>
                       <Field
-                        name="business_name"
+                        name="organization_name"
                         component="input"
                         type="text"
                         className="form-control input shadow-none"
@@ -69,7 +85,7 @@ function ProfileDetails() {
                         Contact name (Main) <span className="required">*</span>
                       </label>
                       <Field
-                        name="contact_name"
+                        name="admin_name"
                         component="input"
                         type="text"
                         className="form-control input shadow-none"
@@ -84,7 +100,7 @@ function ProfileDetails() {
                         Contact Email (Main) <span className="required">*</span>
                       </label>
                       <Field
-                        name="contact_email"
+                        name="admin_email"
                         component="input"
                         type="email"
                         className="form-control input shadow-none"
@@ -96,10 +112,11 @@ function ProfileDetails() {
                         htmlFor="exampleFormControlInput1"
                         className="form-label"
                       >
-                        Date of formation <span className="required">*</span>
+                        Date of Incorporation
+                        <span className="required">*</span>
                       </label>
                       <Field
-                        name="date_of_formation"
+                        name="date_of_incorporation"
                         component="input"
                         type="date"
                         className="form-control input shadow-none"
