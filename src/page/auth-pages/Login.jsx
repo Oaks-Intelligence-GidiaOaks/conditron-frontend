@@ -27,7 +27,7 @@ const constraints = {
 };
 
 function Login() {
-  const [loginUser, { isLoading, error, isSuccess }] = useLoginUserMutation({
+  const [loginUser, { error, isSuccess }] = useLoginUserMutation({
     provideTag: ["User"],
   });
 
@@ -45,14 +45,17 @@ function Login() {
     if (isSuccess) {
       showAlert("", "Login Successful!", "success");
       navigate(routes.DASHBOARD);
+    } else if (error) {
+      showAlert("Oops", error.data.message || "An error occurred", "error");
     }
-  }, [isSuccess, navigate]);
+  }, [error, isSuccess, navigate]);
 
   const [showPassword, setShowPassword] = useState(false);
 
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
   };
+
   return (
     <>
       <section className="bg-auth-small">
@@ -82,12 +85,7 @@ function Login() {
                     <Form
                       onSubmit={onSubmit}
                       validate={validateForm}
-                      render={({
-                        handleSubmit,
-                        form,
-                        submitting,
-                        pristine,
-                      }) => (
+                      render={({ handleSubmit, form, submitting }) => (
                         <form onSubmit={handleSubmit}>
                           <div className="mb-3">
                             <label

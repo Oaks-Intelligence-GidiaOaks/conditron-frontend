@@ -32,7 +32,7 @@ const RouterConfig = () => {
         <Route path={routes.SETUP_PASSWORD} element={<SetupPasswordPage />} />
         <Route
           path={routes.REGISTER_SUCCESS}
-          element={<RegisterSuccessPage />}
+          element={<ProtectedRoute component={RegisterSuccessPage} />}
         />
         <Route
           path={routes.ONBOARDING_PROFILE_DETAILS}

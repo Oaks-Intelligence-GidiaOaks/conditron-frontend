@@ -3,25 +3,53 @@ import * as images from "../../assets";
 import { Form, Field } from "react-final-form";
 import "./onboarding.css";
 import { useDispatch } from "react-redux";
-import { logoutUser } from "../../redux/slices/user.slice";
-import { clearFormData } from "../../redux/slices/register.slice";
+// import { logoutUser } from "../../redux/slices/user.slice";
+import { updateOnboarding } from "../../redux/slices/onboarding.slice";
 import { showAlert } from "../../static/alert";
+import validate from "validate.js";
+import * as routes from "../../routes/CONSTANT";
+import { useNavigate } from "react-router-dom";
+import { handleLogout } from "../../static/logout";
+
+const constraints = {
+  organization_name: {
+    presence: true,
+  },
+  admin_name: {
+    presence: true,
+  },
+  admin_email: {
+    presence: true,
+    email: true,
+  },
+  admin_phone: {
+    presence: true,
+  },
+  date_of_incorporation: {
+    presence: true,
+  },
+};
 
 function ProfileDetails() {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const onSubmit = (values) => {
     console.log(values);
-  };
-
-  const handleLogout = () => {
-    dispatch(logoutUser());
-    dispatch(clearFormData());
+    dispatch(updateOnboarding(values));
     showAlert(
-      "Pls come back again",
-      "You've ended your current session",
+      "Profile details submitted!",
+      "Pls enter address details",
       "success"
     );
+    navigate(routes.ONBOARDING_ADDRESS_DETAILS);
+  };
+
+  const logout = () => {
+    handleLogout(dispatch);
+  };
+  const validateForm = (values) => {
+    return validate(values, constraints) || {};
   };
 
   return (
@@ -35,7 +63,7 @@ function ProfileDetails() {
             </button>
           </div>
           <div className="d-flex">
-            <button className="btn" onClick={() => handleLogout()}>
+            <button className="btn" onClick={() => logout()}>
               <img src={images.logout} alt="" /> Log out
             </button>
           </div>
@@ -59,7 +87,8 @@ function ProfileDetails() {
             <div className="step-form-box">
               <Form
                 onSubmit={onSubmit}
-                render={({ handleSubmit }) => (
+                validate={validateForm}
+                render={({ handleSubmit, form, submitting }) => (
                   <form onSubmit={handleSubmit}>
                     <div className="mb-3">
                       <label
@@ -75,6 +104,12 @@ function ProfileDetails() {
                         className="form-control input shadow-none"
                         placeholder="Business name"
                       />
+                      {form.getState().submitFailed &&
+                        form.getState().errors.organization_name && (
+                          <span className="text-danger">
+                            {form.getState().errors.organization_name}
+                          </span>
+                        )}
                     </div>
 
                     <div className="mb-3">
@@ -91,6 +126,12 @@ function ProfileDetails() {
                         className="form-control input shadow-none"
                         placeholder="Enter name"
                       />
+                      {form.getState().submitFailed &&
+                        form.getState().errors.admin_name && (
+                          <span className="text-danger">
+                            {form.getState().errors.admin_name}
+                          </span>
+                        )}
                     </div>
                     <div className="mb-3">
                       <label
@@ -106,6 +147,33 @@ function ProfileDetails() {
                         className="form-control input shadow-none"
                         placeholder="Enter email"
                       />
+                      {form.getState().submitFailed &&
+                        form.getState().errors.admin_email && (
+                          <span className="text-danger">
+                            {form.getState().errors.admin_email}
+                          </span>
+                        )}
+                    </div>
+                    <div className="mb-3">
+                      <label
+                        htmlFor="exampleFormControlInput1"
+                        className="form-label"
+                      >
+                        Contact Phone (Main) <span className="required">*</span>
+                      </label>
+                      <Field
+                        name="admin_phone"
+                        component="input"
+                        type="number"
+                        className="form-control input shadow-none"
+                        placeholder="Enter Phone"
+                      />
+                      {form.getState().submitFailed &&
+                        form.getState().errors.admin_phone && (
+                          <span className="text-danger">
+                            {form.getState().errors.admin_phone}
+                          </span>
+                        )}
                     </div>
                     <div className="mb-3">
                       <label
@@ -121,11 +189,31 @@ function ProfileDetails() {
                         type="date"
                         className="form-control input shadow-none"
                       />
+                      {form.getState().submitFailed &&
+                        form.getState().errors.date_of_incorporation && (
+                          <span className="text-danger">
+                            {form.getState().errors.date_of_incorporation}
+                          </span>
+                        )}
                     </div>
 
                     <div className="text-center">
-                      <button type="submit" className="btn submit-btn mt-3">
-                        Next
+                      <button
+                        type="submit"
+                        className="btn submit-btn mt-3"
+                        // disabled={submitting || pristine}
+                      >
+                        {submitting ? (
+                          <>
+                            <span className="loading-dots">
+                              <span className="loading-dots-dot"></span>
+                              <span className="loading-dots-dot"></span>
+                              <span className="loading-dots-dot"></span>
+                            </span>
+                          </>
+                        ) : (
+                          "Next"
+                        )}
                       </button>
                     </div>
                   </form>

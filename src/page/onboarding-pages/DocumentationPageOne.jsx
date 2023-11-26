@@ -1,10 +1,16 @@
 import { OnboardingBanner } from "../../components/layout";
 import * as images from "../../assets";
-// import { Form, Field } from "react-final-form";
 import "./onboarding.css";
 import "react-dropzone-uploader/dist/styles.css";
-import { useState } from "react";
-import DropzoneComponent from "./DropzoneComponent"; // Adjust the path
+import { useState, useEffect } from "react";
+import DropzoneComponent from "./DropzoneComponent";
+import { useNavigate } from "react-router-dom";
+import { updateOnboarding } from "../../redux/slices/onboarding.slice";
+import { useDispatch } from "react-redux";
+import { showAlert } from "../../static/alert";
+import * as routes from "../../routes/CONSTANT";
+import { replaceUnderscoresAndCapitalize } from "../../utils/formatOutputStrings";
+import { handleLogout } from "../../static/logout";
 
 function useForceUpdate() {
   const [, setTick] = useState(0);
@@ -14,14 +20,15 @@ function useForceUpdate() {
 
 function DocumentationPageOne() {
   const forceUpdate = useForceUpdate();
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
+  const [uploadedFiles, setUploadedFiles] = useState({});
+  const [submitClicked, setSubmitClicked] = useState(false);
+
   const getUploadParams = (meta, identifier, endpoint) => {
     return {
       url: endpoint,
-      headers: { Authorization: "Bearer YourAccessToken" },
-      formData: [
-        { name: "file", file: meta.file, options: { filename: meta.name } },
-        { name: "identifier", value: identifier },
-      ],
     };
   };
 
@@ -35,7 +42,46 @@ function DocumentationPageOne() {
       `Files submitted for ${identifier}:`,
       files.map((f) => f.meta)
     );
+
+    setUploadedFiles((prevUploadedFiles) => ({
+      ...prevUploadedFiles,
+      [identifier]: {
+        files: files.map((f) => f.meta),
+      },
+    }));
+
+    setSubmitClicked(true);
+
+    const name = replaceUnderscoresAndCapitalize(identifier);
+
+    showAlert("Great", `${name} has been uploaded successfully`, "success");
+
     allFiles.forEach((f) => f.remove());
+  };
+
+  useEffect(() => {
+    if (submitClicked && Object.keys(uploadedFiles).length > 0) {
+      console.log("Uploaded Files:", uploadedFiles);
+      dispatch(updateOnboarding(uploadedFiles));
+
+      setSubmitClicked(false);
+    }
+  }, [uploadedFiles, submitClicked, dispatch]);
+
+  const ButtonDisabled = Object.keys(uploadedFiles).length !== 3;
+  // console.log(uploadedFiles);
+
+  const finish = () => {
+    navigate(routes.DOCUMENTATION_PAGE_TWO);
+    showAlert(
+      "All 3 documents has been uploaded successfully",
+      "Click Finish to proceed",
+      "success"
+    );
+  };
+
+  const logout = () => {
+    handleLogout(dispatch);
   };
 
   return (
@@ -49,7 +95,7 @@ function DocumentationPageOne() {
             </button>
           </div>
           <div className="d-flex">
-            <button className="btn">
+            <button className="btn" onClick={() => logout()}>
               <img src={images.logout} alt="" /> Log out
             </button>
           </div>
@@ -83,7 +129,7 @@ function DocumentationPageOne() {
                   handleChangeStatus={handleChangeStatus}
                   handleSubmit={handleSubmit}
                   label="ID of contact person (Notarized)"
-                  identifier="idContactPerson"
+                  identifier="admin_identity_document"
                 />
               </div>
 
@@ -99,7 +145,7 @@ function DocumentationPageOne() {
                   handleChangeStatus={handleChangeStatus}
                   handleSubmit={handleSubmit}
                   label="Certificate of Incorporation"
-                  identifier="certificateOfIncorporation"
+                  identifier="certificate_of_incorporation"
                 />
               </div>
 
@@ -115,11 +161,16 @@ function DocumentationPageOne() {
                   handleChangeStatus={handleChangeStatus}
                   handleSubmit={handleSubmit}
                   label="Letter of authorization to open account"
-                  identifier="letterOfAuthorization"
+                  identifier="letter_of_authorization"
                 />
               </div>
               <div className="text-center">
-                <button type="submit" className="btn submit-btn mt-3">
+                <button
+                  type="submit"
+                  className="btn submit-btn mt-3"
+                  disabled={ButtonDisabled}
+                  onClick={finish}
+                >
                   Next
                 </button>
               </div>

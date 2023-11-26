@@ -12,3 +12,4 @@ export const ASSETS = "/assets";
 export const RISK_ANALYSIS = "/risk_analysis";
 export const SETTINGS = "/settings";
 export const DOCS_CENTER = "/document_center";
+export const ORGANIZATIONS = "/organizations";

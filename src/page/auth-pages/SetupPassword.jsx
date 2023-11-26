@@ -34,6 +34,7 @@ function SetupPassword() {
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
   };
+
   const toggleConfirmPasswordVisibility = () => {
     setShowConfirmPassword(!showConfirmPassword);
   };
@@ -41,11 +42,12 @@ function SetupPassword() {
   const [registerUser, { error, isSuccess }] = useRegisterUserMutation({
     provideTag: ["User"],
   });
+
   const state = useSelector((state) => state.register);
 
   const onSubmit = async (values) => {
     try {
-      console.log(state);
+      console.log(values);
       await rtkMutation(registerUser, state);
     } catch (error) {
       // console.log(error);
@@ -55,8 +57,12 @@ function SetupPassword() {
 
   useEffect(() => {
     if (isSuccess) {
-      showAlert("Cool", "Account created... let's know more", "success");
-      navigate(routes.ONBOARDING_PROFILE_DETAILS);
+      navigate(routes.LOGIN);
+      showAlert(
+        "Account created successfully!",
+        "Pls login to continue",
+        "success"
+      );
     } else if (error) {
       showAlert("Oops", error.data.message || "An error occurred", "error");
       // console.log(error.data.message);
@@ -109,7 +115,7 @@ function SetupPassword() {
                     <Form
                       onSubmit={(values, form) => onSubmit(values, form)}
                       validate={validateForm}
-                      render={({ handleSubmit, form, submitting, values }) => (
+                      render={({ handleSubmit, form, submitting }) => (
                         <form onSubmit={handleSubmit}>
                           {formSpyComponent}
 

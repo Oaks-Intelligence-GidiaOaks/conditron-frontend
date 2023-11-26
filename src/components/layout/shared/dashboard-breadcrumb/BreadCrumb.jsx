@@ -1,12 +1,21 @@
 import { useState } from "react";
 import * as images from "../../../../assets";
 import "./BreadCrumb.css";
+import { useDispatch } from "react-redux";
+import { handleLogout } from "../../../../static/logout";
 
 function BreadCrumb() {
+  const dispatch = useDispatch();
+
   const [selectedOption, setSelectedOption] = useState("0");
   const handleSelectChange = (event) => {
     setSelectedOption(event.target.value);
   };
+
+  const logout = () => {
+    handleLogout(dispatch);
+  };
+
   return (
     <section className="dashboard-crumb">
       <div className="container-fluid">
@@ -18,8 +27,8 @@ function BreadCrumb() {
             </p>
           </div>
           <div className="d-flex me-lg-5">
-            <button className="btn">
-              <img src={images.logout} alt="" /> Logout
+            <button className="btn" onClick={() => logout()}>
+              <img src={images.logout} alt="" /> Log out
             </button>
             <select
               className="form-select select-box me-lg-3 ms-lg-4"

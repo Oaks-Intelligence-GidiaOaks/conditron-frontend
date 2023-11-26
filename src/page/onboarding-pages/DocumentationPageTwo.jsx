@@ -1,9 +1,47 @@
+import { useEffect } from "react";
 import { OnboardingBanner } from "../../components/layout";
 import * as images from "../../assets";
-// import { Form, Field } from "react-final-form";
 import "./onboarding.css";
+import rtkMutation from "../../utils/rtkMutation";
+import { useRegisterOnboardingMutation } from "../../service/onboarding.service";
+import { useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
+import { showAlert } from "../../static/alert";
+import { REGISTER_SUCCESS } from "../../routes/CONSTANT";
+import { useDispatch } from "react-redux";
+import { handleLogout } from "../../static/logout";
 
 function DocumentationPageTwo() {
+  const dispatch = useDispatch();
+
+  const [registerOnboarding, { error, isSuccess }] =
+    useRegisterOnboardingMutation({
+      provideTag: ["User"],
+    });
+
+  const navigate = useNavigate();
+
+  const data = useSelector((state) => state.onboarding);
+  console.log(data);
+
+  const complete = async () => {
+    await rtkMutation(registerOnboarding, data);
+  };
+
+  useEffect(() => {
+    if (isSuccess) {
+      showAlert("hurray!", "Setup completed Successfully", "success");
+      navigate(REGISTER_SUCCESS);
+    } else if (error) {
+      const errorMessage = error?.data?.errors?.[0]?.msg || "An error occurred";
+      showAlert("Oops", errorMessage, "error");
+    }
+  }, [error, isSuccess, navigate]);
+
+  const logout = () => {
+    handleLogout(dispatch);
+  };
+
   return (
     <>
       <OnboardingBanner />
@@ -15,7 +53,7 @@ function DocumentationPageTwo() {
             </button>
           </div>
           <div className="d-flex">
-            <button className="btn">
+            <button className="btn" onClick={() => logout()}>
               <img src={images.logout} alt="" /> Log out
             </button>
           </div>
@@ -50,7 +88,11 @@ function DocumentationPageTwo() {
               />
 
               <div className="text-center">
-                <button type="submit" className="btn submit-btn mt-3">
+                <button
+                  type="submit"
+                  className="btn submit-btn mt-3"
+                  onClick={complete}
+                >
                   Finish
                 </button>
               </div>

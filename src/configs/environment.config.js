@@ -1,7 +1,8 @@
 // enviroments
 const environment = {
   production: {
-    API_BASE_URL: "",
+    API_BASE_URL:
+      "https://conditron-backend-bcb66b436c43.herokuapp.com/api/v1/",
   },
   development: {
     API_BASE_URL: "http://localhost:5000/api/v1/",

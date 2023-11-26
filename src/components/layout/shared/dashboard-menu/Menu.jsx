@@ -4,9 +4,8 @@ import { NavLink, useLocation } from "react-router-dom";
 import * as routes from "../../../../routes/CONSTANT";
 import "./Menu.css";
 import { useDispatch } from "react-redux";
-import { logoutUser } from "../../../../redux/slices/user.slice";
-import { clearFormData } from "../../../../redux/slices/register.slice";
-import { showAlert } from "../../../../static/alert";
+import { handleLogout } from "../../../../static/logout";
+import { useSelector } from "react-redux";
 
 function Menu() {
   const [selectedOption, setSelectedOption] = useState("0");
@@ -25,15 +24,11 @@ function Menu() {
 
   const dispatch = useDispatch();
 
-  const handleLogout = () => {
-    dispatch(logoutUser());
-    dispatch(clearFormData());
-    showAlert(
-      "Pls come back again",
-      "You've ended your current session",
-      "success"
-    );
+  const logout = () => {
+    handleLogout(dispatch);
   };
+
+  const user = useSelector((state) => state.user.user);
 
   return (
     <>
@@ -58,6 +53,25 @@ function Menu() {
                 />
                 Dashboard
               </NavLink>
+              {user && user?.role === "SuperAdmin" && (
+                <NavLink
+                  to={routes.ORGANIZATIONS}
+                  exact
+                  activeclassname="active"
+                  className="menu-links me-5"
+                >
+                  <img
+                    src={
+                      pathname === routes.ORGANIZATIONS
+                        ? images.users_active
+                        : images.users
+                    }
+                    alt=""
+                    className="me-1"
+                  />
+                  Organizations
+                </NavLink>
+              )}
               <NavLink
                 to={routes.ASSETS}
                 exact
@@ -126,7 +140,7 @@ function Menu() {
                 />
                 Settings
               </NavLink>
-              <button className="btn" onClick={() => handleLogout()}>
+              <button className="btn" onClick={() => logout()}>
                 <img src={images.logout} alt="" /> Logout
               </button>
             </div>

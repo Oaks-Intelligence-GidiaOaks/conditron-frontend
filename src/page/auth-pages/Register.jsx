@@ -10,7 +10,6 @@ import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import validate from "validate.js";
 import { showAlert } from "../../static/alert";
-import { useSelector } from "react-redux";
 
 const constraints = {
   first_name: {
@@ -43,8 +42,6 @@ function Register() {
     return validate(values, constraints) || {};
   };
 
-  const state = useSelector((state) => state.register);
-
   return (
     <>
       <section className="bg-auth">
@@ -74,8 +71,8 @@ function Register() {
                   <div className="p-lg-4">
                     <Form
                       onSubmit={onSubmit}
-                      initialValues={state ? state : {}}
                       validate={validateForm}
+                      // initialValues={state || {}}
                       render={({ handleSubmit, form, submitting }) => (
                         <form onSubmit={handleSubmit} autoComplete="off">
                           <div className="mb-3">

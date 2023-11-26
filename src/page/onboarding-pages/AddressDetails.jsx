@@ -2,10 +2,51 @@ import { OnboardingBanner } from "../../components/layout";
 import * as images from "../../assets";
 import { Form, Field } from "react-final-form";
 import "./onboarding.css";
+import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { updateOnboarding } from "../../redux/slices/onboarding.slice";
+import { showAlert } from "../../static/alert";
+import * as routes from "../../routes/CONSTANT";
+import validate from "validate.js";
+import { countries } from "../../static/countries";
+import { handleLogout } from "../../static/logout";
+
+const constraints = {
+  country: {
+    presence: true,
+  },
+  state: {
+    presence: true,
+  },
+  address: {
+    presence: true,
+  },
+  postal_code: {
+    presence: true,
+  },
+};
 
 function AddressDetails() {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
   const onSubmit = (values) => {
     console.log(values);
+    dispatch(updateOnboarding(values));
+    showAlert(
+      "Address details submitted!",
+      "Pls submit the following documents",
+      "success"
+    );
+    navigate(routes.DOCUMENTATION_PAGE_ONE);
+  };
+
+  const validateForm = (values) => {
+    return validate(values, constraints) || {};
+  };
+
+  const logout = () => {
+    handleLogout(dispatch);
   };
 
   return (
@@ -19,7 +60,7 @@ function AddressDetails() {
             </button>
           </div>
           <div className="d-flex">
-            <button className="btn">
+            <button className="btn" onClick={() => logout()}>
               <img src={images.logout} alt="" /> Log out
             </button>
           </div>
@@ -43,7 +84,8 @@ function AddressDetails() {
             <div className="step-form-box">
               <Form
                 onSubmit={onSubmit}
-                render={({ handleSubmit }) => (
+                validate={validateForm}
+                render={({ handleSubmit, form, submitting }) => (
                   <form onSubmit={handleSubmit}>
                     <div className="mb-3">
                       <label
@@ -58,10 +100,19 @@ function AddressDetails() {
                         type="text"
                         className="form-control input shadow-none"
                       >
-                        <option value="argentina">argentina</option>
-                        <option value="germany">germany</option>
-                        <option value="england">england</option>
+                        <option value="">- select country -</option>
+                        {countries.map((country, index) => (
+                          <option key={index} value={country}>
+                            {country}
+                          </option>
+                        ))}
                       </Field>
+                      {form.getState().submitFailed &&
+                        form.getState().errors.country && (
+                          <span className="text-danger">
+                            {form.getState().errors.country}
+                          </span>
+                        )}
                     </div>
 
                     <div className="mb-3">
@@ -73,30 +124,39 @@ function AddressDetails() {
                       </label>
                       <Field
                         name="state"
-                        component="select"
+                        component="input"
                         type="text"
                         className="form-control input shadow-none"
-                      >
-                        <option value="argentina">bisas</option>
-                        <option value="makta">makta</option>
-                        <option value="jahfk">jahfk</option>
-                      </Field>
+                        placeholder="Enter State"
+                      />
+                      {form.getState().submitFailed &&
+                        form.getState().errors.state && (
+                          <span className="text-danger">
+                            {form.getState().errors.state}
+                          </span>
+                        )}
                     </div>
                     <div className="mb-3">
                       <label
                         htmlFor="exampleFormControlInput1"
                         className="form-label"
                       >
-                        First Line of Address{" "}
+                        First Line of Address
                         <span className="required">*</span>
                       </label>
                       <Field
                         name="address"
                         component="input"
-                        type="email"
+                        type="text"
                         className="form-control input shadow-none"
                         placeholder="Enter Address"
                       />
+                      {form.getState().submitFailed &&
+                        form.getState().errors.address && (
+                          <span className="text-danger">
+                            {form.getState().errors.address}
+                          </span>
+                        )}
                     </div>
                     <div className="mb-3">
                       <label
@@ -108,15 +168,35 @@ function AddressDetails() {
                       <Field
                         name="postal_code"
                         component="input"
-                        type="text"
+                        type="number"
                         className="form-control input shadow-none"
                         placeholder="Enter postal code"
                       />
+                      {form.getState().submitFailed &&
+                        form.getState().errors.postal_code && (
+                          <span className="text-danger">
+                            {form.getState().errors.postal_code}
+                          </span>
+                        )}
                     </div>
 
                     <div className="text-center">
-                      <button type="submit" className="btn submit-btn mt-3">
-                        Next
+                      <button
+                        type="submit"
+                        className="btn submit-btn mt-3"
+                        // disabled={submitting || pristine}
+                      >
+                        {submitting ? (
+                          <>
+                            <span className="loading-dots">
+                              <span className="loading-dots-dot"></span>
+                              <span className="loading-dots-dot"></span>
+                              <span className="loading-dots-dot"></span>
+                            </span>
+                          </>
+                        ) : (
+                          "Next"
+                        )}
                       </button>
                     </div>
                   </form>
