@@ -12,6 +12,7 @@ import rtkMutation from "../../utils/rtkMutation";
 import { formatErrorResponse } from "../../utils/formatErrorResponse";
 import validate from "validate.js";
 import { showAlert } from "../../static/alert";
+import { useDispatch, useSelector } from "react-redux";
 
 const constraints = {
   email: {
@@ -43,12 +44,12 @@ function Login() {
 
   useEffect(() => {
     if (isSuccess) {
-      showAlert("", "Login Successful!", "success");
       navigate(routes.DASHBOARD);
+      showAlert("Welcome back", "Login Successful!", "success");
     } else if (error) {
       showAlert("Oops", error.data.message || "An error occurred", "error");
     }
-  }, [error, isSuccess, navigate]);
+  }, [isSuccess, error, navigate]);
 
   const [showPassword, setShowPassword] = useState(false);
 

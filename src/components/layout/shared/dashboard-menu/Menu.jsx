@@ -2,10 +2,14 @@ import * as images from "../../../../assets";
 import { useState, useEffect } from "react";
 import { NavLink, useLocation } from "react-router-dom";
 import * as routes from "../../../../routes/CONSTANT";
+// import "bootstrap/dist/css/bootstrap.min.css";
 import "./Menu.css";
 import { useDispatch } from "react-redux";
 import { handleLogout } from "../../../../static/logout";
 import { useSelector } from "react-redux";
+import "bootstrap/dist/js/bootstrap.bundle.min.js";
+import { GiHamburgerMenu } from "react-icons/gi";
+import Mobile from "./Mobile";
 
 function Menu() {
   const [selectedOption, setSelectedOption] = useState("0");
@@ -158,9 +162,23 @@ function Menu() {
               </select>
               <img src={images.stats} alt="stats" />
             </div>
+            <div className="d-flex justify-content-end d-block d-sm-inline d-md-inline d-lg-none">
+              <button
+                className="btn"
+                type="button"
+                data-bs-toggle="offcanvas"
+                data-bs-target="#offcanvasScrolling"
+                aria-controls="offcanvasScrolling"
+              >
+                <GiHamburgerMenu size={30} />
+              </button>
+            </div>
           </div>
         </div>
       </section>
+
+      {/* mobile nav */}
+      <Mobile />
     </>
   );
 }

@@ -3,7 +3,8 @@ import * as images from "../../../../assets";
 import { useSelector } from "react-redux";
 
 function OnboardingBanner() {
-  const state = useSelector((state) => state.register);
+  const first_name = useSelector((state) => state.user?.user?.first_name);
+  const last_name = useSelector((state) => state.user?.user?.last_name);
 
   return (
     <section className="bg-onboarding">
@@ -24,7 +25,7 @@ function OnboardingBanner() {
               />
               <div className="avatar pt-lg-2 ms-3">
                 <p className="avatar-name mb-1">
-                  {state.first_name} {state.last_name}
+                  {first_name} {last_name}
                 </p>
                 <p className="avatar-status">Incomplete profile</p>
               </div>

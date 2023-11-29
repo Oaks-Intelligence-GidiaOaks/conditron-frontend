@@ -1,8 +1,24 @@
 import * as images from "../../../../assets";
 import { FaSearch } from "react-icons/fa";
 import "./Header.css";
+import "bootstrap/dist/js/bootstrap.bundle.min.js";
+import Notification from "./Notification";
+import Avatar from "./Avatar";
+import { useSelector } from "react-redux";
+import { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import * as routes from "../../../../routes/CONSTANT";
 
 function Header() {
+  const navigate = useNavigate();
+  const firstUse = useSelector((state) => state.user?.user?.firstUse);
+
+  useEffect(() => {
+    if (firstUse === true) {
+      navigate(routes.ONBOARDING_PROFILE_DETAILS);
+    }
+  }, [firstUse, navigate]);
+
   return (
     <section className="dashboard-nav">
       <div className="container-fluid">
@@ -30,18 +46,18 @@ function Header() {
                 aria-describedby="basic-addon1"
               />
             </div>
-            <button className="btn d-block d-sm-inline d-md-inline d-lg-none">
+            {/* <button
+              type="button"
+              className="btn d-block d-sm-inline d-md-inline d-lg-none"
+            >
               <FaSearch className="search-icon" />
-            </button>
+            </button> */}
           </div>
           <div className="me-lg-5">
             <img src={images.refresh} className="d-none" alt="refresh" />
-            <img
-              src={images.notification}
-              alt="notification"
-              className="px-lg-4 px-sm-5"
-            />
-            <img src={images.avatar} alt="avatar" className="" />
+
+            <Notification />
+            <Avatar />
           </div>
         </div>
       </div>

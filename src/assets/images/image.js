@@ -34,3 +34,4 @@ export const docs_active = `${PATH}/docs-center-active.svg`;
 export const settings_active = `${PATH}/settings-active.svg`;
 export const users_active = `${PATH}/users-active.svg`;
 export const users = `${PATH}/users.svg`;
+export const file = `${PATH}/file.svg`;

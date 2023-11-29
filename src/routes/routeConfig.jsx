@@ -9,6 +9,7 @@ import {
   DocumentationPageOne,
   DocumentationPageTwo,
   DashboardHomePage,
+  OrganizationsPage,
 } from "../page";
 import ProtectedRoute from "../components/protected/ProtectedRoute";
 import PublicRoute from "../components/protected/PublicRoute";
@@ -20,16 +21,20 @@ const RouterConfig = () => {
     <div>
       <Routes>
         <Route
-          path={routes.DASHBOARD}
-          element={<ProtectedRoute component={DashboardHomePage} />}
-        />
-        <Route
           path={routes.LOGIN}
           element={<PublicRoute component={LoginPage} />}
         />
 
         <Route path={routes.REGISTER} element={<RegisterPage />} />
         <Route path={routes.SETUP_PASSWORD} element={<SetupPasswordPage />} />
+        <Route
+          path={routes.ORGANIZATIONS}
+          element={<ProtectedRoute component={OrganizationsPage} />}
+        />
+        <Route
+          path={routes.DASHBOARD}
+          element={<ProtectedRoute component={DashboardHomePage} />}
+        />
         <Route
           path={routes.REGISTER_SUCCESS}
           element={<ProtectedRoute component={RegisterSuccessPage} />}
