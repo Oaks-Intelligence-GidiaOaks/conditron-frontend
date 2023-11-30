@@ -9,3 +9,4 @@ export const ORGANIZATION = "organization";
 export const VERIFIED_ORGANIZATION = "organization/verified";
 export const UNVERIFIED_ORGANIZATION = "organization/unverified";
 export const VERIFY_ORGANIZATION = "organization/verify";
+export const VARIABLE = "variable";

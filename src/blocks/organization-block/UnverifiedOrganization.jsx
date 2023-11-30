@@ -85,11 +85,11 @@ function UnverifiedOrganization() {
             onClick={() => handleToggleRow(row.id)}
           >
             {row.isExpanded ? (
-              <button className="btn btn-light border border-dark">
+              <button className="btn btn-light">
                 <PiCaretUpBold size={25} />
               </button>
             ) : (
-              <button className="btn btn-light border border-dark">
+              <button className="btn btn-light">
                 <PiCaretDownBold size={25} />
               </button>
             )}

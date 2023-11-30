@@ -12,7 +12,6 @@ import rtkMutation from "../../utils/rtkMutation";
 import { formatErrorResponse } from "../../utils/formatErrorResponse";
 import validate from "validate.js";
 import { showAlert } from "../../static/alert";
-import { useDispatch, useSelector } from "react-redux";
 
 const constraints = {
   email: {

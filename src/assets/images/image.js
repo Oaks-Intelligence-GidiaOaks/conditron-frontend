@@ -35,3 +35,10 @@ export const settings_active = `${PATH}/settings-active.svg`;
 export const users_active = `${PATH}/users-active.svg`;
 export const users = `${PATH}/users.svg`;
 export const file = `${PATH}/file.svg`;
+
+export const variables_active = `${PATH}/variables-active.svg`;
+export const variables = `${PATH}/variables.svg`;
+export const model_active = `${PATH}/model-active.svg`;
+export const model = `${PATH}/model.svg`;
+export const censor_active = `${PATH}/censor-active.svg`;
+export const censor = `${PATH}/censor.svg`;

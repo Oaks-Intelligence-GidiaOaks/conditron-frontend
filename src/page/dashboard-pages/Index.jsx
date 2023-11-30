@@ -1,4 +1,9 @@
-import { Header, DashboardMenu, Banner } from "../../components/layout";
+import {
+  Header,
+  DashboardMenu,
+  Banner,
+  DashboardVariations,
+} from "../../components/layout";
 
 function Index() {
   return (
@@ -10,6 +15,7 @@ function Index() {
         text2="Welcome to Conditron"
         text3="page 2 Account Verified."
       />
+      <DashboardVariations />
     </>
   );
 }

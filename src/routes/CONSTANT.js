@@ -13,3 +13,6 @@ export const RISK_ANALYSIS = "/risk_analysis";
 export const SETTINGS = "/settings";
 export const DOCS_CENTER = "/document_center";
 export const ORGANIZATIONS = "/organizations";
+export const VARIABLES = "/variables";
+export const CENSORS = "/censor";
+export const MODELS = "/model";

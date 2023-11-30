@@ -8,3 +8,4 @@ export { default as DocumentationPageOne } from "./onboarding-pages/Documentatio
 export { default as DocumentationPageTwo } from "./onboarding-pages/DocumentationPageTwo";
 export { default as DashboardHomePage } from "./dashboard-pages/Index";
 export { default as OrganizationsPage } from "./dashboard-pages/organizations/Organizations";
+export { default as VariablesPage } from "./dashboard-pages/variables/Index";

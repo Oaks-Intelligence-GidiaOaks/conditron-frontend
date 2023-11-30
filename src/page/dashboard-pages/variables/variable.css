@@ -1,0 +1,15 @@
+.variable-input,
+.variable-input:focus {
+  border-radius: 5px !important;
+  border: 1px solid #9197b3 !important;
+  background: #fff !important;
+  color: #212121 !important;
+  font-family: Poppins;
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+}
+.btn-group.dropend .dropdown-toggle::after {
+  display: none !important;
+}

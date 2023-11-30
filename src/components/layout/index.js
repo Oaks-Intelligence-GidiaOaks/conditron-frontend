@@ -3,3 +3,4 @@ export { default as BreadCrumb } from "./shared/dashboard-breadcrumb/BreadCrumb"
 export { default as Banner } from "./shared/dashboard-banner/Banner";
 export { default as OnboardingBanner } from "./shared/onboarding-banner/OnboardingBanner";
 export { default as DashboardMenu } from "./shared/dashboard-menu/Menu";
+export { default as DashboardVariations } from "./shared/dashboard-menu/Variations";
