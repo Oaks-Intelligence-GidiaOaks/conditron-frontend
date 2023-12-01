@@ -9,3 +9,4 @@ export { default as DocumentationPageTwo } from "./onboarding-pages/Documentatio
 export { default as DashboardHomePage } from "./dashboard-pages/Index";
 export { default as OrganizationsPage } from "./dashboard-pages/organizations/Organizations";
 export { default as VariablesPage } from "./dashboard-pages/variables/Index";
+export { default as CensorsPage } from "./dashboard-pages/censors/Index";

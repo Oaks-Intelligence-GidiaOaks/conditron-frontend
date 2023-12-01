@@ -11,6 +11,7 @@ import {
   DashboardHomePage,
   OrganizationsPage,
   VariablesPage,
+  CensorsPage,
 } from "../page";
 import ProtectedRoute from "../components/protected/ProtectedRoute";
 import PublicRoute from "../components/protected/PublicRoute";
@@ -35,6 +36,10 @@ const RouterConfig = () => {
         <Route
           path={routes.VARIABLES}
           element={<ProtectedRoute component={VariablesPage} />}
+        />
+        <Route
+          path={routes.CENSORS}
+          element={<ProtectedRoute component={CensorsPage} />}
         />
         <Route
           path={routes.DASHBOARD}

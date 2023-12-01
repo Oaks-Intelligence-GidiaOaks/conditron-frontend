@@ -7,7 +7,6 @@ import { Form, Field } from "react-final-form";
 import { showAlert } from "../../../static/alert";
 import validate from "validate.js";
 import rtkMutation from "../../../utils/rtkMutation";
-import { useEffect } from "react";
 import {
   useSaveVariablesMutation,
   useGetVariablesQuery,
@@ -16,18 +15,12 @@ import {
 } from "../../../service/variables.service";
 import "./variable.css";
 import PropTypes from "prop-types";
-import {
-  useTable,
-  usePagination,
-  useGlobalFilter,
-  useRowSelect,
-  useExpanded,
-} from "react-table";
+import { useTable, usePagination, useGlobalFilter } from "react-table";
 import { IoIosArrowForward, IoIosArrowBack } from "react-icons/io";
 import { BsChevronDoubleRight, BsChevronDoubleLeft } from "react-icons/bs";
 import { Filter } from "../../../blocks/organization-block/Filter";
 import { ClipLoader } from "react-spinners";
-import React, { useMemo, useState } from "react";
+import React, { useMemo, useState, useEffect } from "react";
 import { CiMenuKebab } from "react-icons/ci";
 import "bootstrap/dist/js/bootstrap.bundle.min.js";
 import { FcDeleteDatabase, FcEditImage } from "react-icons/fc";
@@ -40,6 +33,8 @@ const constraints = {
 
 function Index() {
   const { data: variableData, isLoading, refetch } = useGetVariablesQuery();
+
+  console.log(variableData);
 
   const [editRowData, setEditRowData] = useState(null);
 
@@ -160,7 +155,7 @@ function Index() {
     rows,
     prepareRow,
     state,
-    // page,
+    page,
     nextPage,
     previousPage,
     canNextPage,
@@ -168,21 +163,19 @@ function Index() {
     pageOptions,
     gotoPage,
     pageCount,
-    // setPageSize,
     setGlobalFilter,
   } = useTable(
     {
       columns: COLUMNS,
       data: useMemo(() => variableData?.variables || [], [variableData]),
-      initialState: { pageIndex: 0, pageSize: 10 },
     },
     useGlobalFilter,
-    useExpanded,
-    usePagination,
-    useRowSelect
+    usePagination
   );
 
-  const { pageIndex, pageSize, globalFilter } = state;
+  const { pageIndex, globalFilter } = state;
+  console.log("Table State:", state);
+  console.log("Page Count:", pageCount);
 
   return (
     <>
@@ -292,7 +285,7 @@ function Index() {
                             </thead>
 
                             <tbody {...getTableBodyProps}>
-                              {rows.map((row) => {
+                              {page.map((row) => {
                                 prepareRow(row);
                                 return (
                                   <React.Fragment key={row.id}>
@@ -370,7 +363,7 @@ function Index() {
         aria-labelledby="staticBackdropLabel"
         aria-hidden="true"
       >
-        <div className="modal-dialog">
+        <div className="modal-dialog modal-dialog-centered">
           <div className="modal-content">
             <div className="modal-header">
               <h1 className="modal-title fs-5" id="staticBackdropLabel">
@@ -390,6 +383,12 @@ function Index() {
                 initialValues={editRowData}
                 render={({ handleSubmit, form, submitting }) => (
                   <form onSubmit={handleSubmit}>
+                    <label
+                      htmlFor="exampleFormControlInput1"
+                      className="form-label"
+                    >
+                      Variable Name
+                    </label>
                     <Field
                       name="variable_name"
                       component="input"
@@ -426,18 +425,6 @@ function Index() {
                 )}
               />
             </div>
-            {/* <div className="modal-footer">
-              <button
-                type="button"
-                className="btn btn-secondary"
-                data-bs-dismiss="modal"
-              >
-                Close
-              </button>
-              <button type="button" className="btn btn-primary">
-                Understood
-              </button>
-            </div> */}
           </div>
         </div>
       </div>
