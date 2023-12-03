@@ -43,11 +43,18 @@ const constraints = {
 };
 
 function Index() {
-  const { data: variableData } = useGetVariablesQuery();
+  const { data: variableData } = useGetVariablesQuery({ page: 1 });
   const variables = variableData?.variables;
-  console.log(variables);
 
-  const { data: censorData, isLoading, refetch } = useGetCensorsQuery();
+  const [pageNumber, setPageNumber] = useState(1);
+  const {
+    data: censorData,
+    isLoading,
+    refetch,
+  } = useGetCensorsQuery({ page: pageNumber });
+
+  const totalCount = censorData?.total || 0;
+  const calculatedPageCount = Math.ceil(totalCount / 10);
 
   console.log(censorData);
 
@@ -146,10 +153,6 @@ function Index() {
   const COLUMNS = useMemo(
     () => [
       {
-        Header: "S/N",
-        accessor: (row, index) => index + 1,
-      },
-      {
         Header: "Censor Name",
         accessor: "sensor_name",
       },
@@ -213,30 +216,34 @@ function Index() {
     getTableProps,
     getTableBodyProps,
     headerGroups,
-    rows,
     prepareRow,
-    state,
     page,
+    canPreviousPage,
+    canNextPage,
+    pageOptions,
+    pageCount,
+    gotoPage,
     nextPage,
     previousPage,
-    canNextPage,
-    canPreviousPage,
-    pageOptions,
-    gotoPage,
-    pageCount,
+    setPageSize,
+    state: { pageIndex, pageSize, globalFilter },
     setGlobalFilter,
   } = useTable(
     {
       columns: COLUMNS,
       data: useMemo(() => censorData?.sensors || [], [censorData]),
+      initialState: { pageIndex: 0, pageSize: 10 },
+      manualPagination: true,
+      pageCount: calculatedPageCount,
     },
     useGlobalFilter,
     usePagination
   );
 
-  const { pageIndex, globalFilter } = state;
-  //   console.log("Table State:", state);
-  //   console.log("Page Count:", pageCount);
+  useEffect(() => {
+    setPageNumber(pageIndex + 1);
+    refetch({ page: pageIndex + 1, pageSize });
+  }, [refetch, pageIndex, pageSize]);
 
   return (
     <>
@@ -264,7 +271,7 @@ function Index() {
                   <ClipLoader color="#212121" loading={true} />
                 ) : (
                   <>
-                    {rows.length === 0 ? (
+                    {page.length === 0 ? (
                       <p className="text-center lead">No records available.</p>
                     ) : (
                       <>
@@ -286,6 +293,7 @@ function Index() {
                                   key={headerGroup.id || index}
                                   {...headerGroup.getHeaderGroupProps()}
                                 >
+                                  <th>S/N</th>
                                   {headerGroup.headers.map((column) => (
                                     <th
                                       key={column.id}
@@ -299,11 +307,14 @@ function Index() {
                             </thead>
 
                             <tbody {...getTableBodyProps}>
-                              {page.map((row) => {
+                              {page.map((row, localIndex) => {
+                                const globalIndex =
+                                  pageIndex * pageSize + localIndex + 1;
                                 prepareRow(row);
                                 return (
                                   <React.Fragment key={row.id}>
                                     <tr {...row.getRowProps()}>
+                                      <td>{globalIndex}</td>
                                       {row.cells.map((cell) => {
                                         return (
                                           <td
@@ -326,7 +337,7 @@ function Index() {
                           <p className="pt-3 me-3 text-xs">
                             Page{" "}
                             <span className="ms-1">
-                              {pageIndex + 1} of {pageOptions.length}
+                              {pageIndex + 1} of {calculatedPageCount}
                             </span>
                           </p>
                           <button

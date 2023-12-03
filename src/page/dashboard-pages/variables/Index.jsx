@@ -91,12 +91,18 @@ function Index() {
     }
   }, [isSuccess, error]);
 
+  const [pageNumber, setPageNumber] = useState(1);
+  const {
+    data: variableData,
+    isLoading,
+    refetch,
+  } = useGetVariablesQuery({ page: pageNumber });
+
+  const totalCount = variableData?.total || 0;
+  const calculatedPageCount = Math.ceil(totalCount / 10);
+
   const COLUMNS = useMemo(
     () => [
-      {
-        Header: "S/N",
-        accessor: (row, index) => index + 1,
-      },
       {
         Header: "Variables",
         accessor: "variable_name",
@@ -145,15 +151,6 @@ function Index() {
   );
 
   const {
-    data: variableData,
-    isLoading,
-    refetch,
-  } = useGetVariablesQuery({ page: 1 });
-
-  const totalCount = variableData?.total || 0;
-  const calculatedPageCount = Math.ceil(totalCount / 10);
-
-  const {
     getTableProps,
     getTableBodyProps,
     headerGroups,
@@ -167,7 +164,8 @@ function Index() {
     nextPage,
     previousPage,
     setPageSize,
-    state: { pageIndex, pageSize },
+    state: { pageIndex, pageSize, globalFilter },
+    setGlobalFilter,
   } = useTable(
     {
       columns: COLUMNS,
@@ -176,19 +174,14 @@ function Index() {
       manualPagination: true,
       pageCount: calculatedPageCount,
     },
+    useGlobalFilter,
     usePagination
   );
 
   useEffect(() => {
-    refetch({ page: pageIndex + 1, pageSize: 10 });
-  }, [refetch, pageIndex, pageSize]);
-
-  console.log(variableData);
-
-  console.log("pageIndex:", pageIndex);
-  console.log("pageSize:", pageSize);
-  console.log("canPreviousPage:", canPreviousPage);
-  console.log("canNextPage:", canNextPage);
+    setPageNumber(pageIndex + 1);
+    refetch({ page: pageNumber });
+  }, [refetch, pageIndex, pageNumber]);
 
   return (
     <>
@@ -267,12 +260,12 @@ function Index() {
                       <p className="text-center lead">No records available.</p>
                     ) : (
                       <>
-                        {/* <div className="justify-content-start w-100 align-items-center pb-3">
+                        <div className="justify-content-start w-100 align-items-center pb-3">
                           <Filter
                             filter={globalFilter}
                             setFilter={setGlobalFilter}
                           />
-                        </div> */}
+                        </div>
 
                         <div className="table-responsive">
                           <table
@@ -285,6 +278,7 @@ function Index() {
                                   key={headerGroup.id || index}
                                   {...headerGroup.getHeaderGroupProps()}
                                 >
+                                  <th>S/N</th>
                                   {headerGroup.headers.map((column) => (
                                     <th
                                       key={column.id}
@@ -298,21 +292,22 @@ function Index() {
                             </thead>
 
                             <tbody {...getTableBodyProps}>
-                              {page.map((row) => {
+                              {page.map((row, localIndex) => {
+                                const globalIndex =
+                                  pageIndex * pageSize + localIndex + 1;
                                 prepareRow(row);
                                 return (
                                   <React.Fragment key={row.id}>
                                     <tr {...row.getRowProps()}>
-                                      {row.cells.map((cell) => {
-                                        return (
-                                          <td
-                                            key={cell.column.id}
-                                            {...cell.getCellProps()}
-                                          >
-                                            {cell.render("Cell")}
-                                          </td>
-                                        );
-                                      })}
+                                      <td>{globalIndex}</td>
+                                      {row.cells.map((cell) => (
+                                        <td
+                                          key={cell.column.id}
+                                          {...cell.getCellProps()}
+                                        >
+                                          {cell.render("Cell")}
+                                        </td>
+                                      ))}
                                     </tr>
                                   </React.Fragment>
                                 );

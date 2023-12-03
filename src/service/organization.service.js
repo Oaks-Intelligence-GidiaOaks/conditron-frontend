@@ -9,16 +9,16 @@ export const userApiSlice = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
     // Get unverified organization route
     getUnverifiedOrganization: builder.query({
-      query: () => ({
-        url: UNVERIFIED_ORGANIZATION,
+      query: ({ page = 1 }) => ({
+        url: `${UNVERIFIED_ORGANIZATION}?page=${page}`,
         method: "GET",
       }),
       providesTags: ["Organization"],
     }),
 
     getVerifiedOrganization: builder.query({
-      query: () => ({
-        url: VERIFIED_ORGANIZATION,
+      query: ({ page = 1 }) => ({
+        url: `${VERIFIED_ORGANIZATION}?page=${page}`,
         method: "GET",
       }),
       providesTags: ["Organization"],

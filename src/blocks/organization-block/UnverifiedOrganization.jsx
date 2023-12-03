@@ -1,4 +1,4 @@
-import React, { useMemo, useCallback, useState } from "react";
+import React, { useMemo, useCallback, useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import {
   useGetUnverifiedOrganizationQuery,
@@ -22,19 +22,30 @@ import { FaRegEye } from "react-icons/fa";
 import { file } from "../../assets";
 
 function getFileNameFromURL(url) {
-  const pathname = new URL(url).pathname;
-  const pathSegments = pathname.split("/");
-  return pathSegments[pathSegments.length - 1];
+  try {
+    const pathname = new URL(url).pathname || "";
+    const pathSegments = pathname.split("/");
+    return pathSegments[pathSegments.length - 1];
+  } catch (error) {
+    console.error("Error constructing URL:", error);
+    return "";
+  }
 }
 
 function UnverifiedOrganization() {
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [pageNumber, setPageNumber] = useState(1);
+
   const {
     data: organizationData,
     isLoading,
     // isError,
     refetch,
-  } = useGetUnverifiedOrganizationQuery();
+  } = useGetUnverifiedOrganizationQuery({ page: pageNumber });
+  console.log(organizationData);
+
+  const totalCount = organizationData?.total || 0;
+  const calculatedPageCount = Math.ceil(totalCount / 10);
 
   const [approveOrganization] = useApproveOrganizationMutation();
 
@@ -52,10 +63,6 @@ function UnverifiedOrganization() {
 
   const COLUMNS = useMemo(
     () => [
-      {
-        Header: "S/N",
-        accessor: (row, index) => index + 1,
-      },
       {
         Header: "Organization Name",
         accessor: "organization_name",
@@ -104,17 +111,17 @@ function UnverifiedOrganization() {
     getTableProps,
     getTableBodyProps,
     headerGroups,
-    rows,
     prepareRow,
-    state,
-    // page,
+    page,
+    canPreviousPage,
+    canNextPage,
+    pageOptions,
+    pageCount,
+    gotoPage,
     nextPage,
     previousPage,
-    canNextPage,
-    canPreviousPage,
-    pageOptions,
-    gotoPage,
-    pageCount,
+    // setPageSize,
+    state: { pageIndex, pageSize, globalFilter },
     // setPageSize,
     setGlobalFilter,
     toggleAllRowsSelected,
@@ -127,6 +134,8 @@ function UnverifiedOrganization() {
         [organizationData]
       ),
       initialState: { pageIndex: 0, pageSize: 10 },
+      manualPagination: true,
+      pageCount: calculatedPageCount,
     },
     useGlobalFilter,
     useExpanded,
@@ -134,15 +143,21 @@ function UnverifiedOrganization() {
     useRowSelect
   );
 
-  const { pageIndex, pageSize, globalFilter } = state;
+  const [clickedRow, setClickedRow] = useState(null);
 
   const handleToggleRow = useCallback(
     (id) => {
       toggleAllRowsSelected(false);
       toggleRowExpanded(id);
+      setClickedRow(clickedRow === id ? null : id);
     },
-    [toggleAllRowsSelected, toggleRowExpanded]
+    [clickedRow, toggleAllRowsSelected, toggleRowExpanded]
   );
+
+  useEffect(() => {
+    setPageNumber(pageIndex + 1);
+    refetch({ page: pageNumber });
+  }, [refetch, pageIndex, pageNumber]);
 
   return (
     <div className="container-fluid">
@@ -151,7 +166,7 @@ function UnverifiedOrganization() {
           <ClipLoader color="#212121" loading={true} />
         ) : (
           <>
-            {rows.length === 0 ? (
+            {page.length === 0 ? (
               <p className="text-center lead">No records available.</p>
             ) : (
               <>
@@ -170,6 +185,7 @@ function UnverifiedOrganization() {
                           key={headerGroup.id || index}
                           {...headerGroup.getHeaderGroupProps()}
                         >
+                          <th>S/N</th>
                           {headerGroup.headers.map((column) => (
                             <th key={column.id} {...column.getHeaderProps()}>
                               {column.render("Header")}
@@ -180,11 +196,20 @@ function UnverifiedOrganization() {
                     </thead>
 
                     <tbody {...getTableBodyProps}>
-                      {rows.map((row) => {
+                      {page.map((row, localIndex) => {
+                        const globalIndex =
+                          pageIndex * pageSize + localIndex + 1;
                         prepareRow(row);
+                        const isClicked = clickedRow === row.id;
                         return (
                           <React.Fragment key={row.id}>
-                            <tr {...row.getRowProps()}>
+                            <tr
+                              {...row.getRowProps()}
+                              className={
+                                isClicked ? "border-start border-dark" : ""
+                              }
+                            >
+                              <td>{globalIndex}</td>
                               {row.cells.map((cell) => {
                                 return (
                                   <td
@@ -198,7 +223,7 @@ function UnverifiedOrganization() {
                             </tr>
                             {row.isExpanded && (
                               <>
-                                <tr>
+                                <tr className="border-start border-dark">
                                   <td>
                                     <label className="text-xs">State</label>
                                     <br />
@@ -225,7 +250,7 @@ function UnverifiedOrganization() {
                                     {row.original.date_of_incorporation}
                                   </td>
                                 </tr>
-                                <tr>
+                                <tr className="border-start border-dark">
                                   <td>
                                     <label className="text-xs">
                                       Letter of Authorization

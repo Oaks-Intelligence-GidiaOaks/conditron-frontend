@@ -14,8 +14,8 @@ export const censorsApiSlice = apiSlice.injectEndpoints({
     }),
 
     getCensors: builder.query({
-      query: () => ({
-        url: CENSOR,
+      query: ({ page = 1 }) => ({
+        url: `${CENSOR}?page=${page}`,
         method: "GET",
       }),
       providesTags: ["Censor"],
