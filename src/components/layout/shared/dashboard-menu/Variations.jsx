@@ -18,7 +18,7 @@ function Variations() {
     <>
       <section className="bg-white">
         <div className="container-fluid">
-          <div className="d-flex me-lg-3 ms-lg-3 py-3 justify-content-between align-items-center">
+          <div className="d-flex me-lg-3 ms-lg-3 pb-4 justify-content-between align-items-center">
             <div className="items d-flex align-items-center ms-lg-5 d-none d-md-none d-lg-flex">
               <NavLink
                 to={routes.VARIABLES}

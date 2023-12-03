@@ -14,8 +14,8 @@ export const variablesApiSlice = apiSlice.injectEndpoints({
     }),
 
     getVariables: builder.query({
-      query: () => ({
-        url: VARIABLE,
+      query: ({ page = 1 }) => ({
+        url: `${VARIABLE}?page=${page}`,
         method: "GET",
       }),
       providesTags: ["Variable"],

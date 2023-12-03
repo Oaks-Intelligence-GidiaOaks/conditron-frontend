@@ -41,7 +41,7 @@ function Mobile() {
               to={routes.DASHBOARD}
               exact
               activeclassname="active"
-              className="menu-links pb-5"
+              className="menu-links pb-4"
             >
               <img
                 src={
@@ -59,7 +59,7 @@ function Mobile() {
                 to={routes.ORGANIZATIONS}
                 exact
                 activeclassname="active"
-                className="menu-links pb-5"
+                className="menu-links pb-4"
               >
                 <img
                   src={
@@ -77,7 +77,7 @@ function Mobile() {
               to={routes.ASSETS}
               exact
               activeclassname="active"
-              className="menu-links pb-5"
+              className="menu-links pb-4"
             >
               <img
                 src={
@@ -94,7 +94,7 @@ function Mobile() {
               to={routes.ASSETS}
               exact
               activeclassname="active"
-              className="menu-links pb-5"
+              className="menu-links pb-4"
             >
               <img
                 src={
@@ -111,7 +111,7 @@ function Mobile() {
               to={routes.DOCS_CENTER}
               exact
               activeclassname="active"
-              className="menu-links pb-5"
+              className="menu-links pb-4"
             >
               <img
                 src={
@@ -128,7 +128,7 @@ function Mobile() {
               to={routes.ASSETS}
               exact
               activeclassname="active"
-              className="menu-links pb-5"
+              className="menu-links pb-4"
             >
               <img
                 src={
@@ -140,6 +140,58 @@ function Mobile() {
                 className="me-1 svg"
               />
               Settings
+            </NavLink>
+            <NavLink
+              to={routes.VARIABLES}
+              exact
+              activeclassname="active"
+              className="menu-links pb-4"
+            >
+              <img
+                src={
+                  pathname === routes.VARIABLES
+                    ? images.variables_active
+                    : images.variables
+                }
+                alt=""
+                className="me-1"
+              />
+              Variable
+            </NavLink>
+
+            <NavLink
+              to={routes.CENSORS}
+              exact
+              activeclassname="active"
+              className="menu-links pb-4"
+            >
+              <img
+                src={
+                  pathname === routes.CENSORS
+                    ? images.censor_active
+                    : images.censor
+                }
+                alt=""
+                className="me-1"
+              />
+              Censor
+            </NavLink>
+            <NavLink
+              to={routes.MODELS}
+              exact
+              activeclassname="active"
+              className="menu-links pb-4"
+            >
+              <img
+                src={
+                  pathname === routes.MODELS
+                    ? images.model_active
+                    : images.model
+                }
+                alt=""
+                className="me-1"
+              />
+              Model
             </NavLink>
           </div>
         </div>

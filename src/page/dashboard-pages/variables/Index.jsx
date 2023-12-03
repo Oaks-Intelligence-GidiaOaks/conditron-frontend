@@ -32,10 +32,6 @@ const constraints = {
 };
 
 function Index() {
-  const { data: variableData, isLoading, refetch } = useGetVariablesQuery();
-
-  console.log(variableData);
-
   const [editRowData, setEditRowData] = useState(null);
 
   const openEditModal = (rowData) => {
@@ -149,33 +145,50 @@ function Index() {
   );
 
   const {
+    data: variableData,
+    isLoading,
+    refetch,
+  } = useGetVariablesQuery({ page: 1 });
+
+  const totalCount = variableData?.total || 0;
+  const calculatedPageCount = Math.ceil(totalCount / 10);
+
+  const {
     getTableProps,
     getTableBodyProps,
     headerGroups,
-    rows,
     prepareRow,
-    state,
     page,
+    canPreviousPage,
+    canNextPage,
+    pageOptions,
+    pageCount,
+    gotoPage,
     nextPage,
     previousPage,
-    canNextPage,
-    canPreviousPage,
-    pageOptions,
-    gotoPage,
-    pageCount,
-    setGlobalFilter,
+    setPageSize,
+    state: { pageIndex, pageSize },
   } = useTable(
     {
       columns: COLUMNS,
       data: useMemo(() => variableData?.variables || [], [variableData]),
+      initialState: { pageIndex: 0, pageSize: 10 },
+      manualPagination: true,
+      pageCount: calculatedPageCount,
     },
-    useGlobalFilter,
     usePagination
   );
 
-  const { pageIndex, globalFilter } = state;
-  console.log("Table State:", state);
-  console.log("Page Count:", pageCount);
+  useEffect(() => {
+    refetch({ page: pageIndex + 1, pageSize: 10 });
+  }, [refetch, pageIndex, pageSize]);
+
+  console.log(variableData);
+
+  console.log("pageIndex:", pageIndex);
+  console.log("pageSize:", pageSize);
+  console.log("canPreviousPage:", canPreviousPage);
+  console.log("canNextPage:", canNextPage);
 
   return (
     <>
@@ -250,16 +263,16 @@ function Index() {
                   <ClipLoader color="#212121" loading={true} />
                 ) : (
                   <>
-                    {rows.length === 0 ? (
+                    {page.length === 0 ? (
                       <p className="text-center lead">No records available.</p>
                     ) : (
                       <>
-                        <div className="justify-content-start w-100 align-items-center pb-3">
+                        {/* <div className="justify-content-start w-100 align-items-center pb-3">
                           <Filter
                             filter={globalFilter}
                             setFilter={setGlobalFilter}
                           />
-                        </div>
+                        </div> */}
 
                         <div className="table-responsive">
                           <table

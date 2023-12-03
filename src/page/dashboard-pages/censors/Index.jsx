@@ -57,6 +57,10 @@ function Index() {
     setEditRowData(rowData);
   };
 
+  const closeEditModal = () => {
+    setEditRowData(null);
+  };
+
   const [updateCensor] = useUpdateCensorsMutation();
 
   const handleEditSubmit = async (id, values) => {
@@ -73,6 +77,7 @@ function Index() {
     try {
       await rtkMutation(updateCensor, { id, data: updatedValues });
       showAlert("Great!", "Censor has been updated Successfully", "success");
+      closeEditModal();
     } catch (error) {
       console.error("Unexpected error during update:", error);
       showAlert("Oops", "An unexpected error occurred", "error");
@@ -97,20 +102,37 @@ function Index() {
   };
 
   const validateForm = (values) => {
-    return validate(values, constraints) || {};
+    const errors = validate(values, constraints);
+
+    // Custom validation for variables
+    if (values.no_of_variables && values.variables) {
+      const selectedVariables = values.variables.map(
+        (variable) => variable.value
+      );
+      if (selectedVariables.length !== parseInt(values.no_of_variables, 10)) {
+        return {
+          ...errors,
+          variables:
+            "Number of selected variables must match the specified number.",
+        };
+      }
+    }
+
+    return errors || {};
   };
 
   const [Censor, { error, isSuccess }] = useSaveCensorsMutation({
     provideTag: ["Censor"],
   });
 
-  const onSubmit = async (values) => {
+  const onSubmit = async (values, form) => {
     const selectedVariables = values.variables.map(
       (variable) => variable.value
     );
     const updatedValues = { ...values, variables: selectedVariables };
     await rtkMutation(Censor, updatedValues);
     refetch();
+    form.reset();
   };
 
   useEffect(() => {
@@ -223,7 +245,7 @@ function Index() {
       <DashboardVariations />
 
       <div className="container-fluid">
-        <div className="row px-lg-5 justify-content-end me-lg-1">
+        <div className="row px-lg-5 p-2 justify-content-end me-lg-1">
           <button
             className="btn btn-light w-auto border"
             type="button"
@@ -359,13 +381,14 @@ function Index() {
           <div className="modal-content">
             <div className="modal-header">
               <h1 className="modal-title fs-5" id="staticBackdropLabel">
-                Create Censor
+                Update Censor
               </h1>
               <button
                 type="button"
                 className="btn-close"
                 data-bs-dismiss="modal"
                 aria-label="Close"
+                onClick={closeEditModal}
               ></button>
             </div>
             <div className="modal-body">
@@ -373,10 +396,10 @@ function Index() {
                 onSubmit={(values) => handleEditSubmit(editRowData._id, values)}
                 validate={validateForm}
                 initialValues={{
-                  sensor_name: editRowData.sensor_name,
-                  IPAddress: editRowData.IPAddress,
-                  no_of_variables: editRowData.no_of_variables,
-                  variables: editRowData.variables.map((variable) => ({
+                  sensor_name: editRowData?.sensor_name || "",
+                  IPAddress: editRowData?.IPAddress || "",
+                  no_of_variables: editRowData?.no_of_variables || 0,
+                  variables: (editRowData?.variables || []).map((variable) => ({
                     value: variable._id,
                     label: variable.variable_name,
                   })),
@@ -525,7 +548,7 @@ function Index() {
             </div>
             <div className="modal-body">
               <Form
-                onSubmit={onSubmit}
+                onSubmit={(values, form) => onSubmit(values, form)}
                 validate={validateForm}
                 render={({ handleSubmit, form, submitting }) => (
                   <form onSubmit={handleSubmit}>
