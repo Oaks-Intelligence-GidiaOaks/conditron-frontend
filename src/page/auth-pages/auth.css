@@ -16,8 +16,7 @@
 .bg-auth-small {
   position: relative;
   height: 100vh;
-  background: url("../../assets/images/auth.png") center/cover no-repeat,
-    lightgray 50%;
+  background: url("../../images/auth.png") center/cover no-repeat, lightgray 50%;
   opacity: 0.9 !important;
 }
 
@@ -35,8 +34,7 @@
 .bg-auth {
   position: relative;
   height: 100%;
-  background: url("../../assets/images/auth.png") center/cover no-repeat,
-    lightgray 50%;
+  background: url("../../images/auth.png") center/cover no-repeat, lightgray 50%;
   opacity: 0.9 !important;
 }
 
