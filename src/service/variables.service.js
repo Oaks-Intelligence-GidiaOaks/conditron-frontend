@@ -1,4 +1,4 @@
-import { VARIABLE } from "./constants";
+import { VARIABLE, VARIABLE_DISABLE } from "./constants";
 import apiSlice from "./api/apiSlice";
 
 export const variablesApiSlice = apiSlice.injectEndpoints({
@@ -20,6 +20,13 @@ export const variablesApiSlice = apiSlice.injectEndpoints({
       }),
       providesTags: ["Variable"],
     }),
+    getAllVariables: builder.query({
+      query: () => ({
+        url: "variable/data",
+        method: "GET",
+      }),
+      providesTags: ["Variable"],
+    }),
 
     deleteVariables: builder.mutation({
       query: ({ id }) => ({
@@ -37,12 +44,23 @@ export const variablesApiSlice = apiSlice.injectEndpoints({
       }),
       invalidatesTags: ["Variable"],
     }),
+
+    disableVariables: builder.mutation({
+      query: ({ id, data }) => ({
+        url: `${VARIABLE_DISABLE}/${id}`,
+        body: data,
+        method: "POST",
+      }),
+      invalidatesTags: ["Variable"],
+    }),
   }),
 });
 
 export const {
   useSaveVariablesMutation,
   useGetVariablesQuery,
+  useGetAllVariablesQuery,
   useDeleteVariablesMutation,
   useUpdateVariablesMutation,
+  useDisableVariablesMutation,
 } = variablesApiSlice;

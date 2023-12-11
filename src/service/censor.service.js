@@ -1,4 +1,4 @@
-import { CENSOR } from "./constants";
+import { CENSOR, SENSOR_DISABLE } from "./constants";
 import apiSlice from "./api/apiSlice";
 
 export const censorsApiSlice = apiSlice.injectEndpoints({
@@ -37,6 +37,15 @@ export const censorsApiSlice = apiSlice.injectEndpoints({
       }),
       invalidatesTags: ["Censor"],
     }),
+
+    disableCensors: builder.mutation({
+      query: ({ id, data }) => ({
+        url: `${SENSOR_DISABLE}/${id}`,
+        body: data,
+        method: "POST",
+      }),
+      invalidatesTags: ["Censor"],
+    }),
   }),
 });
 
@@ -45,4 +54,5 @@ export const {
   useGetCensorsQuery,
   useDeleteCensorsMutation,
   useUpdateCensorsMutation,
+  useDisableCensorsMutation,
 } = censorsApiSlice;

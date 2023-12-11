@@ -12,7 +12,9 @@ import {
   OrganizationsPage,
   VariablesPage,
   CensorsPage,
+  ModelsPage,
 } from "../page";
+
 import ProtectedRoute from "../components/protected/ProtectedRoute";
 import PublicRoute from "../components/protected/PublicRoute";
 
@@ -32,6 +34,10 @@ const RouterConfig = () => {
         <Route
           path={routes.ORGANIZATIONS}
           element={<ProtectedRoute component={OrganizationsPage} />}
+        />
+        <Route
+          path={routes.MODELS}
+          element={<ProtectedRoute component={ModelsPage} />}
         />
         <Route
           path={routes.VARIABLES}

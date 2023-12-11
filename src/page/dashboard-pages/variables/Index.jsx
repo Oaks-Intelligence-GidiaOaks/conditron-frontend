@@ -1,7 +1,7 @@
 import {
   Header,
   DashboardMenu,
-  DashboardVariations,
+  // DashboardVariations,
 } from "../../../components/layout";
 import { Form, Field } from "react-final-form";
 import { showAlert } from "../../../static/alert";
@@ -12,6 +12,7 @@ import {
   useGetVariablesQuery,
   useDeleteVariablesMutation,
   useUpdateVariablesMutation,
+  useDisableVariablesMutation,
 } from "../../../service/variables.service";
 import "./variable.css";
 import PropTypes from "prop-types";
@@ -23,7 +24,9 @@ import { ClipLoader } from "react-spinners";
 import React, { useMemo, useState, useEffect } from "react";
 import { CiMenuKebab } from "react-icons/ci";
 import "bootstrap/dist/js/bootstrap.bundle.min.js";
-import { FcDeleteDatabase, FcEditImage } from "react-icons/fc";
+import { FiToggleLeft, FiToggleRight } from "react-icons/fi";
+import { LuClipboardEdit } from "react-icons/lu";
+import { AiOutlineDeleteRow } from "react-icons/ai";
 
 const constraints = {
   variable_name: {
@@ -69,6 +72,21 @@ function Index() {
     }
   };
 
+  const [toggleVariable] = useDisableVariablesMutation();
+  const handleToggle = async (rowId, values) => {
+    try {
+      await rtkMutation(toggleVariable, { id: rowId, data: values });
+      showAlert("Great!", "Variable has been toggled Successfully", "success");
+    } catch (error) {
+      console.error("Error toggling variable:", error);
+      showAlert(
+        "Error",
+        "An error occurred while deleting the variable",
+        "error"
+      );
+    }
+  };
+
   const validateForm = (values) => {
     return validate(values, constraints) || {};
   };
@@ -98,6 +116,8 @@ function Index() {
     refetch,
   } = useGetVariablesQuery({ page: pageNumber });
 
+  console.log(variableData);
+
   const totalCount = variableData?.total || 0;
   const calculatedPageCount = Math.ceil(totalCount / 10);
 
@@ -125,22 +145,49 @@ function Index() {
                 <li>
                   <button
                     type="button"
-                    className="btn btn-sm"
+                    className="btn btn-sm dropdown-item"
                     data-bs-toggle="modal"
                     data-bs-target="#staticBackdrop"
                     onClick={() => openEditModal(row.original)}
                   >
-                    <FcEditImage size={"20"} /> Edit
+                    <LuClipboardEdit size={"20"} /> Edit
                   </button>
                 </li>
+
                 <li>
                   <button
-                    className="btn btn-sm"
+                    className="btn btn-sm dropdown-item"
                     onClick={() => handleDelete(row.original._id)}
                   >
-                    <FcDeleteDatabase size={"20"} /> Delete
+                    <AiOutlineDeleteRow size={"20"} /> Delete
                   </button>
                 </li>
+
+                {row.original.disabled === false ? (
+                  <li>
+                    <button
+                      type="button"
+                      className="btn btn-sm dropdown-item"
+                      onClick={() =>
+                        handleToggle(row.original._id, { disable: true })
+                      }
+                    >
+                      <FiToggleLeft size={"20"} /> Disable
+                    </button>
+                  </li>
+                ) : (
+                  <li>
+                    <button
+                      type="button"
+                      className="btn btn-sm dropdown-item"
+                      onClick={() =>
+                        handleToggle(row.original._id, { disable: false })
+                      }
+                    >
+                      <FiToggleRight size={"20"} /> Enable
+                    </button>
+                  </li>
+                )}
               </ul>
             </div>
           </>
@@ -187,7 +234,7 @@ function Index() {
     <>
       <Header />
       <DashboardMenu />
-      <DashboardVariations />
+      {/* <DashboardVariations /> */}
 
       <div className="container-fluid">
         <div className="row justify-content-center px-lg-5 pt-4 pb-5 gap-4">

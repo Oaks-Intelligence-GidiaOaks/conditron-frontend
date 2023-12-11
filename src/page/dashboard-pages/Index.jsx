@@ -2,7 +2,7 @@ import {
   Header,
   DashboardMenu,
   Banner,
-  DashboardVariations,
+  // DashboardVariations,
 } from "../../components/layout";
 
 function Index() {
@@ -10,7 +10,7 @@ function Index() {
     <>
       <Header />
       <DashboardMenu />
-      <DashboardVariations />
+      {/* <DashboardVariations /> */}
       <Banner
         text1="Hi, oaksintelligence"
         text2="Welcome to Conditron"

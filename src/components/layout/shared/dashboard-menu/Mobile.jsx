@@ -4,7 +4,6 @@ import * as routes from "../../../../routes/CONSTANT";
 import "bootstrap/dist/js/bootstrap.bundle.min.js";
 import { useState, useEffect } from "react";
 import { NavLink, useLocation } from "react-router-dom";
-
 import { useSelector } from "react-redux";
 
 function Mobile() {
@@ -16,6 +15,7 @@ function Mobile() {
   }, [location]);
 
   const user = useSelector((state) => state.user.user);
+
   return (
     <>
       <div
@@ -41,7 +41,7 @@ function Mobile() {
               to={routes.DASHBOARD}
               exact
               activeclassname="active"
-              className="menu-links pb-4"
+              className="menu-links me-5 pb-3"
             >
               <img
                 src={
@@ -54,145 +54,151 @@ function Mobile() {
               />
               Dashboard
             </NavLink>
-            {user && user?.role === "SuperAdmin" && (
-              <NavLink
-                to={routes.ORGANIZATIONS}
-                exact
-                activeclassname="active"
-                className="menu-links pb-4"
-              >
-                <img
-                  src={
-                    pathname === routes.ORGANIZATIONS
-                      ? images.users_active
-                      : images.users
-                  }
-                  alt=""
-                  className="me-1"
-                />
-                Organizations
-              </NavLink>
-            )}
-            <NavLink
-              to={routes.ASSETS}
-              exact
-              activeclassname="active"
-              className="menu-links pb-4"
-            >
-              <img
-                src={
-                  pathname === routes.ASSETS
-                    ? images.asset_active
-                    : images.assets
-                }
-                alt=""
-                className="me-1"
-              />
-              Assets
-            </NavLink>
-            <NavLink
-              to={routes.ASSETS}
-              exact
-              activeclassname="active"
-              className="menu-links pb-4"
-            >
-              <img
-                src={
-                  pathname === routes.RISK_ANALYSIS
-                    ? images.risk_active
-                    : images.risk
-                }
-                alt=""
-                className="me-1"
-              />
-              Risk Analysis
-            </NavLink>
-            <NavLink
-              to={routes.DOCS_CENTER}
-              exact
-              activeclassname="active"
-              className="menu-links pb-4"
-            >
-              <img
-                src={
-                  pathname === routes.DOCS_CENTER
-                    ? images.docs_active
-                    : images.docs_center
-                }
-                alt=""
-                className="me-1"
-              />
-              Document center
-            </NavLink>
-            <NavLink
-              to={routes.ASSETS}
-              exact
-              activeclassname="active"
-              className="menu-links pb-4"
-            >
-              <img
-                src={
-                  pathname === routes.SETTINGS
-                    ? images.settings_active
-                    : images.settings
-                }
-                alt=""
-                className="me-1 svg"
-              />
-              Settings
-            </NavLink>
-            <NavLink
-              to={routes.VARIABLES}
-              exact
-              activeclassname="active"
-              className="menu-links pb-4"
-            >
-              <img
-                src={
-                  pathname === routes.VARIABLES
-                    ? images.variables_active
-                    : images.variables
-                }
-                alt=""
-                className="me-1"
-              />
-              Variable
-            </NavLink>
 
-            <NavLink
-              to={routes.CENSORS}
-              exact
-              activeclassname="active"
-              className="menu-links pb-4"
-            >
-              <img
-                src={
-                  pathname === routes.CENSORS
-                    ? images.censor_active
-                    : images.censor
-                }
-                alt=""
-                className="me-1"
-              />
-              Censor
-            </NavLink>
-            <NavLink
-              to={routes.MODELS}
-              exact
-              activeclassname="active"
-              className="menu-links pb-4"
-            >
-              <img
-                src={
-                  pathname === routes.MODELS
-                    ? images.model_active
-                    : images.model
-                }
-                alt=""
-                className="me-1"
-              />
-              Model
-            </NavLink>
+            {user && user?.role !== "SuperAdmin" ? (
+              <>
+                <NavLink
+                  to={routes.ASSETS}
+                  exact
+                  activeclassname="active"
+                  className="menu-links me-5 pb-3"
+                >
+                  <img
+                    src={
+                      pathname === routes.ASSETS
+                        ? images.asset_active
+                        : images.assets
+                    }
+                    alt=""
+                    className="me-1"
+                  />
+                  Assets
+                </NavLink>
+                <NavLink
+                  to={routes.VARIABLES}
+                  exact
+                  activeclassname="active"
+                  className="menu-links me-5 pb-3"
+                >
+                  <img
+                    src={
+                      pathname === routes.VARIABLES
+                        ? images.variables_active
+                        : images.variables
+                    }
+                    alt=""
+                    className="me-1"
+                  />
+                  Variable
+                </NavLink>
+
+                <NavLink
+                  to={routes.CENSORS}
+                  exact
+                  activeclassname="active"
+                  className="menu-links me-5 pb-3"
+                >
+                  <img
+                    src={
+                      pathname === routes.CENSORS
+                        ? images.censor_active
+                        : images.censor
+                    }
+                    alt=""
+                    className="me-1"
+                  />
+                  Sensor
+                </NavLink>
+                <NavLink
+                  to={routes.MODELS}
+                  exact
+                  activeclassname="active"
+                  className="menu-links me-5 pb-3"
+                >
+                  <img
+                    src={
+                      pathname === routes.MODELS
+                        ? images.model_active
+                        : images.model
+                    }
+                    alt=""
+                    className="me-1"
+                  />
+                  Model
+                </NavLink>
+                <NavLink
+                  to={routes.ASSETS}
+                  exact
+                  activeclassname="active"
+                  className="menu-links me-5 pb-3"
+                >
+                  <img
+                    src={
+                      pathname === routes.RISK_ANALYSIS
+                        ? images.risk_active
+                        : images.risk
+                    }
+                    alt=""
+                    className="me-1"
+                  />
+                  Risk Analysis
+                </NavLink>
+                <NavLink
+                  to={routes.DOCS_CENTER}
+                  exact
+                  activeclassname="active"
+                  className="menu-links me-5 pb-3"
+                >
+                  <img
+                    src={
+                      pathname === routes.DOCS_CENTER
+                        ? images.docs_active
+                        : images.docs_center
+                    }
+                    alt=""
+                    className="me-1"
+                  />
+                  Document center
+                </NavLink>
+                <NavLink
+                  to={routes.SETTINGS}
+                  exact
+                  activeclassname="active"
+                  className="menu-links me-5 pb-3"
+                >
+                  <img
+                    src={
+                      pathname === routes.SETTINGS
+                        ? images.settings_active
+                        : images.settings
+                    }
+                    alt=""
+                    className="me-1 svg"
+                  />
+                  Settings
+                </NavLink>
+              </>
+            ) : (
+              <>
+                <NavLink
+                  to={routes.ORGANIZATIONS}
+                  exact
+                  activeclassname="active"
+                  className="menu-links me-5 pb-3"
+                >
+                  <img
+                    src={
+                      pathname === routes.ORGANIZATIONS
+                        ? images.users_active
+                        : images.users
+                    }
+                    alt=""
+                    className="me-1"
+                  />
+                  Organizations
+                </NavLink>
+              </>
+            )}
           </div>
         </div>
       </div>
