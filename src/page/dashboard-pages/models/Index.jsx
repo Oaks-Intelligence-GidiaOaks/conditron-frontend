@@ -1,3 +1,4 @@
+import "katex/dist/katex.min.css";
 import {
   Header,
   DashboardMenu,
@@ -28,14 +29,15 @@ import Select from "react-select";
 import { FiToggleLeft, FiToggleRight } from "react-icons/fi";
 import { LuClipboardEdit } from "react-icons/lu";
 import { AiOutlineDeleteRow } from "react-icons/ai";
+import { MathsQuill } from "../../../components/widget";
 
 const constraints = {
   model_name: {
     presence: true,
   },
-  model: {
-    presence: true,
-  },
+  // model: {
+  //   presence: true,
+  // },
   nature_of_output: {
     presence: true,
   },
@@ -45,14 +47,15 @@ const constraints = {
   no_of_operation_zone: {
     presence: true,
   },
-  variables: {
-    presence: true,
-  },
+  // variables: {
+  //   presence: true,
+  // },
 };
 
 function Index() {
   const { data: variableData } = useGetAllVariablesQuery();
   const variables = variableData?.variables;
+  console.log(variableData);
 
   const [pageNumber, setPageNumber] = useState(1);
   const {
@@ -99,13 +102,14 @@ function Index() {
   };
 
   const onSubmit = async (values, form) => {
-    const selectedVariables = values.variables.map(
-      (variable) => variable.value
-    );
-    const updatedValues = { ...values, variables: selectedVariables };
-    await rtkMutation(Model, updatedValues);
-    refetch();
-    form.reset();
+    console.log(values);
+    // const selectedVariables = values.variables.map(
+    //   (variable) => variable.value
+    // );
+    // const updatedValues = { ...values, variables: selectedVariables };
+    // await rtkMutation(Model, updatedValues);
+    // refetch();
+    // form.reset();
   };
 
   useEffect(() => {
@@ -271,6 +275,8 @@ function Index() {
     setPageNumber(pageIndex + 1);
     refetch({ page: pageIndex + 1, pageSize });
   }, [refetch, pageIndex, pageSize]);
+
+  const MemoizedMathsQuill = React.memo(MathsQuill);
 
   return (
     <>
@@ -570,18 +576,26 @@ function Index() {
                       >
                         Enter Model
                       </label>
-                      <Field
-                        name="model"
-                        component="input"
-                        type="text"
-                        className="form-control variable-input"
-                      />
-                      {form.getState().submitFailed &&
-                        form.getState().errors.model && (
-                          <span className="text-danger">
-                            {form.getState().errors.model}
-                          </span>
+
+                      <Field name="model">
+                        {({ input, meta }) => (
+                          <>
+                            <MemoizedMathsQuill
+                              onChange={(value) => {
+                                console.log(
+                                  "Form: MathsQuillEditor onChange triggered",
+                                  value
+                                );
+                                input.onChange(value);
+                              }}
+                              value={input.value}
+                            />
+                            {meta.error && meta.touched && (
+                              <span className="text-danger">{meta.error}</span>
+                            )}
+                          </>
                         )}
+                      </Field>
                     </div>
 
                     <div className="text-center">
