@@ -16,3 +16,4 @@ export const ORGANIZATIONS = "/organizations";
 export const VARIABLES = "/variables";
 export const CENSORS = "/censor";
 export const MODELS = "/model";
+export const TEST = "/test";

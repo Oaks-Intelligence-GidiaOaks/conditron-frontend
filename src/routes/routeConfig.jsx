@@ -13,6 +13,7 @@ import {
   VariablesPage,
   CensorsPage,
   ModelsPage,
+  TestPage,
 } from "../page";
 
 import ProtectedRoute from "../components/protected/ProtectedRoute";
@@ -28,6 +29,7 @@ const RouterConfig = () => {
           path={routes.LOGIN}
           element={<PublicRoute component={LoginPage} />}
         />
+        <Route path={routes.TEST} element={<TestPage />} />
 
         <Route path={routes.REGISTER} element={<RegisterPage />} />
         <Route path={routes.SETUP_PASSWORD} element={<SetupPasswordPage />} />

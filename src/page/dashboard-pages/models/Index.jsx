@@ -1,4 +1,3 @@
-import "katex/dist/katex.min.css";
 import {
   Header,
   DashboardMenu,
@@ -15,7 +14,7 @@ import { CiMenuKebab } from "react-icons/ci";
 import "bootstrap/dist/js/bootstrap.bundle.min.js";
 import {
   useGetModelQuery,
-  useDeleteModelMutation,
+  // useDeleteModelMutation,
   useSaveModelMutation,
   useUpdateModelMutation,
   useDisableModelsMutation,
@@ -28,8 +27,13 @@ import rtkMutation from "../../../utils/rtkMutation";
 import Select from "react-select";
 import { FiToggleLeft, FiToggleRight } from "react-icons/fi";
 import { LuClipboardEdit } from "react-icons/lu";
-import { AiOutlineDeleteRow } from "react-icons/ai";
-import { MathsQuill } from "../../../components/widget";
+// import { AiOutlineDeleteRow } from "react-icons/ai";
+// import { MathsQuill } from "../../../components/widget";
+
+import { addStyles, EditableMathField } from "react-mathquill";
+import TexSymbols from "./TexSymbols";
+import "./style.css";
+addStyles();
 
 const constraints = {
   model_name: {
@@ -47,9 +51,9 @@ const constraints = {
   no_of_operation_zone: {
     presence: true,
   },
-  // variables: {
-  //   presence: true,
-  // },
+  variables: {
+    presence: true,
+  },
 };
 
 function Index() {
@@ -73,48 +77,131 @@ function Index() {
 
   const openEditModal = (rowData) => {
     setEditRowData(rowData);
+
+    const editVariables = (rowData?.variables || []).map((variable) => ({
+      value: variable._id,
+      label: variable.variable_name,
+    }));
+
+    const mapping = editVariables.map((variable, index) => ({
+      id: variable.value,
+      name: variable.label,
+      alias: `V${index + 1}`,
+    }));
+
+    setVariableMapping(mapping);
   };
 
   const closeEditModal = () => {
     setEditRowData(null);
+    setVariableMapping([]);
   };
 
-  const [deleteCensor] = useDeleteModelMutation();
-  const handleDelete = async (rowId) => {
-    try {
-      console.log("Deleting row with ID:", rowId);
+  // const [deleteModel] = useDeleteModelMutation();
+  // const handleDelete = async (rowId) => {
+  //   try {
+  //     console.log("Deleting row with ID:", rowId);
 
-      await rtkMutation(deleteCensor, { id: rowId });
-      showAlert("Great!", "Model has been deleted Successfully", "success");
-    } catch (error) {
-      console.error("Error deleting model:", error);
-      showAlert("Error", "An error occurred while deleting the model", "error");
-    }
-  };
-
-  const [Model, { error, isSuccess }] = useSaveModelMutation({
-    provideTag: ["Model"],
-  });
+  //     await rtkMutation(deleteModel, { id: rowId });
+  //     showAlert("Great!", "Model has been deleted Successfully", "success");
+  //   } catch (error) {
+  //     console.error("Error deleting model:", error);
+  //     showAlert("Error", "An error occurred while deleting the model", "error");
+  //   }
+  // };
 
   const validateForm = (values) => {
     const errors = validate(values, constraints);
     return errors || {};
   };
 
+  const [equation, setEquation] = useState("");
+  const [variableMapping, setVariableMapping] = useState([]);
+
+  const [errors, setErrors] = useState(null);
+
+  function InsertSymbol(symbol) {
+    console.log(symbol);
+    setEquation((prevEquation) => prevEquation + symbol);
+    setErrors(null);
+  }
+
+  const validateEquation = (equation, variableMapping) => {
+    const variableNames = variableMapping.map((variable) => variable.alias);
+    console.log(variableNames);
+
+    const allVariablesReferenced = variableNames.every((variableName) =>
+      equation.includes(variableName)
+    );
+
+    console.log(allVariablesReferenced);
+    console.log(equation);
+
+    const extractVariables = (equation) => {
+      return equation.match(/[A-Z]+\d+/g) || [];
+    };
+
+    const equationVariables = extractVariables(equation);
+    console.log(equationVariables);
+
+    if (equationVariables.length > variableNames.length) {
+      return "Variables in equation is more than selected variables";
+    }
+
+    const missingVariables = variableNames.filter(
+      (variableName) => !equation.includes(variableName)
+    );
+
+    return { isValid: allVariablesReferenced, missingVariables };
+  };
+
+  const updateVariableMapping = (variables) => {
+    const mapping = variables.map((variable, index) => ({
+      id: variable.value,
+      name: variable.label,
+      alias: `V${index + 1}`,
+    }));
+
+    setVariableMapping(mapping);
+  };
+
+  const [Model, { error, isSuccess }] = useSaveModelMutation({
+    provideTag: ["Model"],
+  });
+
   const onSubmit = async (values, form) => {
-    console.log(values);
-    // const selectedVariables = values.variables.map(
-    //   (variable) => variable.value
-    // );
-    // const updatedValues = { ...values, variables: selectedVariables };
-    // await rtkMutation(Model, updatedValues);
-    // refetch();
-    // form.reset();
+    const selectedVariables = values.variables.map(
+      (variable) => variable.value
+    );
+    const updatedValues = {
+      ...values,
+      variables: selectedVariables,
+      model: equation,
+      variableMapping,
+    };
+
+    const validationResults = validateEquation(equation, variableMapping);
+
+    if (typeof validationResults === "string") {
+      setErrors(validationResults);
+    } else if (!validationResults.isValid) {
+      const missingVariables = validationResults.missingVariables.join(", ");
+      setErrors(
+        `Equation validation failed. Missing variables: ${missingVariables}`
+      );
+    } else {
+      await rtkMutation(Model, updatedValues);
+      refetch();
+      form.reset();
+      setVariableMapping([]);
+      setEquation("");
+      console.log("true submitted!");
+    }
   };
 
   useEffect(() => {
     if (isSuccess) {
-      showAlert("Great", "Censor created Successfully!", "success");
+      showAlert("Great", "Model created Successfully!", "success");
     } else if (error) {
       showAlert("Oops", error.data.message || "An error occurred", "error");
     }
@@ -124,21 +211,37 @@ function Index() {
   const handleEditSubmit = async (id, values) => {
     console.log("Edit Form Data:", id, values);
 
-    // Map variables to an array of strings
     const selectedVariables = values.variables.map(
       (variable) => variable.value
     );
 
-    // Create a copy of values with updated variables
-    const updatedValues = { ...values, variables: selectedVariables };
+    const updatedValues = {
+      ...values,
+      variables: selectedVariables,
+      model: equation,
+      variableMapping,
+    };
 
-    try {
-      await rtkMutation(updateModel, { id, data: updatedValues });
-      showAlert("Great!", "Model has been updated Successfully", "success");
-      closeEditModal();
-    } catch (error) {
-      console.error("Unexpected error during update:", error);
-      showAlert("Oops", "An unexpected error occurred", "error");
+    const validationResults = validateEquation(equation, variableMapping);
+
+    if (typeof validationResults === "string") {
+      setErrors(validationResults);
+    } else if (!validationResults.isValid) {
+      const missingVariables = validationResults.missingVariables.join(", ");
+      setErrors(
+        `Equation validation failed. Missing variables: ${missingVariables}`
+      );
+    } else {
+      try {
+        console.log(updatedValues);
+
+        await rtkMutation(updateModel, { id, data: updatedValues });
+        showAlert("Great!", "Model has been updated Successfully", "success");
+        closeEditModal();
+      } catch (error) {
+        console.error("Unexpected error during update:", error);
+        showAlert("Oops", "An unexpected error occurred", "error");
+      }
     }
   };
 
@@ -176,6 +279,11 @@ function Index() {
         accessor: "no_of_operation_zone",
       },
       {
+        Header: "Variables",
+        accessor: (row) =>
+          row.variables.map((variable) => variable.variable_name).join(", "),
+      },
+      {
         Header: "Action",
         accessor: "",
         Cell: ({ row }) => (
@@ -195,20 +303,22 @@ function Index() {
                     type="button"
                     className="btn btn-sm dropdown-item"
                     data-bs-toggle="modal"
-                    data-bs-target="#updateCensor"
+                    data-bs-target="#updateModel"
                     onClick={() => openEditModal(row.original)}
                   >
                     <LuClipboardEdit size={"20"} /> Edit
                   </button>
                 </li>
-                <li>
+
+                {/* <li>
                   <button
                     className="btn btn-sm dropdown-item"
                     onClick={() => handleDelete(row.original._id)}
                   >
                     <AiOutlineDeleteRow size={"20"} /> Delete
                   </button>
-                </li>
+                </li> */}
+
                 {row.original.disabled === false ? (
                   <li>
                     <button
@@ -275,8 +385,6 @@ function Index() {
     setPageNumber(pageIndex + 1);
     refetch({ page: pageIndex + 1, pageSize });
   }, [refetch, pageIndex, pageSize]);
-
-  const MemoizedMathsQuill = React.memo(MathsQuill);
 
   return (
     <>
@@ -422,7 +530,7 @@ function Index() {
         aria-labelledby="staticBackdropLabel"
         aria-hidden="true"
       >
-        <div className="modal-dialog modal-dialog-centered modal-lg">
+        <div className="modal-dialog modal-dialog-centered modal-xl">
           <div className="modal-content">
             <div className="modal-header">
               <h1 className="modal-title fs-5" id="staticBackdropLabel">
@@ -541,10 +649,7 @@ function Index() {
                     </div>
 
                     <div className="mb-3">
-                      <label
-                        htmlFor="exampleFormControlInput1"
-                        className="form-label"
-                      >
+                      <label htmlFor="selectVariables" className="form-label">
                         Select Variable
                       </label>
                       <Field
@@ -558,6 +663,10 @@ function Index() {
                               label: row.variable_name,
                             }))}
                             placeholder="-- Select variable(s) --"
+                            onChange={(selectedVariables) => {
+                              input.onChange(selectedVariables);
+                              updateVariableMapping(selectedVariables);
+                            }}
                           />
                         )}
                       />
@@ -569,33 +678,34 @@ function Index() {
                         )}
                     </div>
 
-                    <div className="mb-5">
-                      <label
-                        htmlFor="exampleFormControlInput1"
-                        className="form-label"
-                      >
-                        Enter Model
-                      </label>
+                    {variableMapping && variableMapping.length > 0 ? (
+                      <div className="mb-4">
+                        <p>Variable Mapping:</p>
+                        {variableMapping.map((variable) => (
+                          <p key={variable.id}>
+                            {`${variable.alias} = ${variable.name}`}
+                          </p>
+                        ))}
+                      </div>
+                    ) : null}
 
-                      <Field name="model">
-                        {({ input, meta }) => (
-                          <>
-                            <MemoizedMathsQuill
-                              onChange={(value) => {
-                                console.log(
-                                  "Form: MathsQuillEditor onChange triggered",
-                                  value
-                                );
-                                input.onChange(value);
-                              }}
-                              value={input.value}
-                            />
-                            {meta.error && meta.touched && (
-                              <span className="text-danger">{meta.error}</span>
-                            )}
-                          </>
-                        )}
-                      </Field>
+                    <div className="mb-5">
+                      <label htmlFor="equation" className="form-label">
+                        Enter Equation
+                      </label>
+                      <EditableMathField
+                        latex={equation}
+                        onChange={(mathField) => {
+                          setEquation(mathField.latex());
+                          setErrors(null);
+                        }}
+                      />
+                      {errors && (
+                        <div className="text-danger text-sm">{errors}</div>
+                      )}
+                      <hr />
+                      <TexSymbols onClick={InsertSymbol} />
+                      <hr />
                     </div>
 
                     <div className="text-center">
@@ -634,7 +744,7 @@ function Index() {
         aria-labelledby="staticBackdropLabel"
         aria-hidden="true"
       >
-        <div className="modal-dialog modal-dialog-centered modal-lg">
+        <div className="modal-dialog modal-dialog-centered modal-xl">
           <div className="modal-content">
             <div className="modal-header">
               <h1 className="modal-title fs-5" id="staticBackdropLabel">
@@ -658,10 +768,10 @@ function Index() {
                   nature_of_output: editRowData?.nature_of_output || "",
                   range: editRowData?.range || "",
                   no_of_operation_zone: editRowData?.no_of_operation_zone || "",
-                  variables: (editRowData?.variables || []).map((variable) => ({
-                    value: variable._id,
-                    label: variable.variable_name,
-                  })),
+                  // variables: (editRowData?.variables || []).map((variable) => ({
+                  //   value: variable._id,
+                  //   label: variable.variable_name,
+                  // })),
                 }}
                 render={({ handleSubmit, form, submitting }) => (
                   <form onSubmit={handleSubmit}>
@@ -682,27 +792,6 @@ function Index() {
                         form.getState().errors.model_name && (
                           <span className="text-danger">
                             {form.getState().errors.model_name}
-                          </span>
-                        )}
-                    </div>
-
-                    <div className="mb-3">
-                      <label
-                        htmlFor="exampleFormControlInput1"
-                        className="form-label"
-                      >
-                        Enter Model
-                      </label>
-                      <Field
-                        name="model"
-                        component="input"
-                        type="text"
-                        className="form-control variable-input"
-                      />
-                      {form.getState().submitFailed &&
-                        form.getState().errors.model && (
-                          <span className="text-danger">
-                            {form.getState().errors.model}
                           </span>
                         )}
                     </div>
@@ -803,15 +892,57 @@ function Index() {
                               label: row.variable_name,
                             }))}
                             placeholder="-- Select variable(s) --"
+                            onChange={(selectedVariables, action) => {
+                              input.onChange(selectedVariables);
+
+                              // Preserve default behavior for React-Select
+                              if (
+                                action.action === "select-option" ||
+                                action.action === "remove-value"
+                              ) {
+                                updateVariableMapping(selectedVariables);
+                              }
+                            }}
                           />
                         )}
                       />
+
                       {form.getState().submitFailed &&
                         form.getState().errors.variables && (
                           <span className="text-danger">
                             {form.getState().errors.variables}
                           </span>
                         )}
+                    </div>
+
+                    {variableMapping && variableMapping.length > 0 ? (
+                      <div className="mb-4">
+                        <p>Variable Mapping:</p>
+                        {variableMapping.map((variable) => (
+                          <p key={variable.id}>
+                            {`${variable.alias} = ${variable.name}`}
+                          </p>
+                        ))}
+                      </div>
+                    ) : null}
+
+                    <div className="mb-5">
+                      <label htmlFor="equation" className="form-label">
+                        Enter Equation
+                      </label>
+                      <EditableMathField
+                        latex={editRowData?.model || ""}
+                        onChange={(mathField) => {
+                          setEquation(mathField.latex());
+                          setErrors(null);
+                        }}
+                      />
+                      {errors && (
+                        <div className="text-danger text-sm">{errors}</div>
+                      )}
+                      <hr />
+                      <TexSymbols onClick={InsertSymbol} />
+                      <hr />
                     </div>
 
                     <div className="text-center">

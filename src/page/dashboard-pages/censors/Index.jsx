@@ -9,7 +9,7 @@ import validate from "validate.js";
 import rtkMutation from "../../../utils/rtkMutation";
 import { useGetAllVariablesQuery } from "../../../service/variables.service";
 import {
-  useDeleteCensorsMutation,
+  // useDeleteCensorsMutation,
   useSaveCensorsMutation,
   useUpdateCensorsMutation,
   useGetCensorsQuery,
@@ -95,22 +95,22 @@ function Index() {
     }
   };
 
-  const [deleteCensor] = useDeleteCensorsMutation();
-  const handleDelete = async (rowId) => {
-    try {
-      console.log("Deleting row with ID:", rowId);
+  // const [deleteCensor] = useDeleteCensorsMutation();
+  // const handleDelete = async (rowId) => {
+  //   try {
+  //     console.log("Deleting row with ID:", rowId);
 
-      await rtkMutation(deleteCensor, { id: rowId });
-      showAlert("Great!", "Censor has been deleted Successfully", "success");
-    } catch (error) {
-      console.error("Error deleting censor:", error);
-      showAlert(
-        "Error",
-        "An error occurred while deleting the censor",
-        "error"
-      );
-    }
-  };
+  //     await rtkMutation(deleteCensor, { id: rowId });
+  //     showAlert("Great!", "Censor has been deleted Successfully", "success");
+  //   } catch (error) {
+  //     console.error("Error deleting censor:", error);
+  //     showAlert(
+  //       "Error",
+  //       "An error occurred while deleting the censor",
+  //       "error"
+  //     );
+  //   }
+  // };
 
   const validateForm = (values) => {
     const errors = validate(values, constraints);
@@ -214,14 +214,15 @@ function Index() {
                     <LuClipboardEdit size={"20"} /> Edit
                   </button>
                 </li>
-                <li>
+                {/* <li>
                   <button
                     className="btn btn-sm dropdown-item"
                     onClick={() => handleDelete(row.original._id)}
                   >
                     <AiOutlineDeleteRow size={"20"} /> Delete
                   </button>
-                </li>
+                </li> */}
+
                 {row.original.disabled === false ? (
                   <li>
                     <button

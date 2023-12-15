@@ -11,3 +11,4 @@ export { default as OrganizationsPage } from "./dashboard-pages/organizations/Or
 export { default as VariablesPage } from "./dashboard-pages/variables/Index";
 export { default as CensorsPage } from "./dashboard-pages/censors/Index";
 export { default as ModelsPage } from "./dashboard-pages/models/Index";
+export { default as TestPage } from "./dashboard-pages/test/Index";

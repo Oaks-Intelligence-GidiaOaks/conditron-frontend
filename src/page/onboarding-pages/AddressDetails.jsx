@@ -168,7 +168,7 @@ function AddressDetails() {
                       <Field
                         name="postal_code"
                         component="input"
-                        type="number"
+                        type="text"
                         className="form-control input shadow-none"
                         placeholder="Enter postal code"
                       />

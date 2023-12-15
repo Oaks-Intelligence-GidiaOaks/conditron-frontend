@@ -10,7 +10,7 @@ import rtkMutation from "../../../utils/rtkMutation";
 import {
   useSaveVariablesMutation,
   useGetVariablesQuery,
-  useDeleteVariablesMutation,
+  // useDeleteVariablesMutation,
   useUpdateVariablesMutation,
   useDisableVariablesMutation,
 } from "../../../service/variables.service";
@@ -55,22 +55,22 @@ function Index() {
     }
   };
 
-  const [deleteVariable] = useDeleteVariablesMutation();
-  const handleDelete = async (rowId) => {
-    try {
-      console.log("Deleting row with ID:", rowId);
+  // const [deleteVariable] = useDeleteVariablesMutation();
+  // const handleDelete = async (rowId) => {
+  //   try {
+  //     console.log("Deleting row with ID:", rowId);
 
-      await rtkMutation(deleteVariable, { id: rowId });
-      showAlert("Great!", "Variable has been deleted Successfully", "success");
-    } catch (error) {
-      console.error("Error deleting variable:", error);
-      showAlert(
-        "Error",
-        "An error occurred while deleting the variable",
-        "error"
-      );
-    }
-  };
+  //     await rtkMutation(deleteVariable, { id: rowId });
+  //     showAlert("Great!", "Variable has been deleted Successfully", "success");
+  //   } catch (error) {
+  //     console.error("Error deleting variable:", error);
+  //     showAlert(
+  //       "Error",
+  //       "An error occurred while deleting the variable",
+  //       "error"
+  //     );
+  //   }
+  // };
 
   const [toggleVariable] = useDisableVariablesMutation();
   const handleToggle = async (rowId, values) => {
@@ -95,10 +95,11 @@ function Index() {
     provideTag: ["Variable"],
   });
 
-  const onSubmit = async (values) => {
+  const onSubmit = async (values, form) => {
     console.log(values);
     await rtkMutation(Variable, values);
     refetch();
+    form.reset();
   };
 
   useEffect(() => {
@@ -154,14 +155,14 @@ function Index() {
                   </button>
                 </li>
 
-                <li>
+                {/* <li>
                   <button
                     className="btn btn-sm dropdown-item"
                     onClick={() => handleDelete(row.original._id)}
                   >
                     <AiOutlineDeleteRow size={"20"} /> Delete
                   </button>
-                </li>
+                </li> */}
 
                 {row.original.disabled === false ? (
                   <li>
