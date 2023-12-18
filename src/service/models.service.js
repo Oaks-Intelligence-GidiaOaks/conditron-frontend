@@ -10,7 +10,7 @@ export const modelsApiSlice = apiSlice.injectEndpoints({
         body: data,
         method: "POST",
       }),
-      invalidatesTags: ["Models"],
+      invalidatesTags: ["Model"],
     }),
 
     getModel: builder.query({
@@ -18,7 +18,7 @@ export const modelsApiSlice = apiSlice.injectEndpoints({
         url: `${MODELS}?page=${page}`,
         method: "GET",
       }),
-      providesTags: ["Models"],
+      providesTags: ["Model"],
     }),
 
     deleteModel: builder.mutation({
@@ -26,7 +26,7 @@ export const modelsApiSlice = apiSlice.injectEndpoints({
         url: `${MODELS}/${id}`,
         method: "DELETE",
       }),
-      invalidatesTags: ["Models"],
+      invalidatesTags: ["Model"],
     }),
 
     updateModel: builder.mutation({
@@ -35,7 +35,7 @@ export const modelsApiSlice = apiSlice.injectEndpoints({
         body: data,
         method: "PUT",
       }),
-      invalidatesTags: ["Models"],
+      invalidatesTags: ["Model"],
     }),
 
     disableModels: builder.mutation({
@@ -44,7 +44,7 @@ export const modelsApiSlice = apiSlice.injectEndpoints({
         body: data,
         method: "POST",
       }),
-      invalidatesTags: ["Censor"],
+      invalidatesTags: ["Model"],
     }),
   }),
 });

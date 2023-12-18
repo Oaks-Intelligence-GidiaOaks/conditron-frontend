@@ -30,10 +30,11 @@ import { LuClipboardEdit } from "react-icons/lu";
 // import { AiOutlineDeleteRow } from "react-icons/ai";
 // import { MathsQuill } from "../../../components/widget";
 
-import { addStyles, EditableMathField } from "react-mathquill";
+import { addStyles, EditableMathField, StaticMathField } from "react-mathquill";
 import TexSymbols from "./TexSymbols";
 import "./style.css";
 addStyles();
+import { parse } from "mathjs";
 
 const constraints = {
   model_name: {
@@ -89,12 +90,12 @@ function Index() {
       alias: `V${index + 1}`,
     }));
 
-    setVariableMapping(mapping);
+    setVariableMap(mapping);
   };
 
   const closeEditModal = () => {
     setEditRowData(null);
-    setVariableMapping([]);
+    setVariableMap([]);
   };
 
   // const [deleteModel] = useDeleteModelMutation();
@@ -116,7 +117,7 @@ function Index() {
   };
 
   const [equation, setEquation] = useState("");
-  const [variableMapping, setVariableMapping] = useState([]);
+  const [variableMap, setVariableMap] = useState([]);
 
   const [errors, setErrors] = useState(null);
 
@@ -126,8 +127,8 @@ function Index() {
     setErrors(null);
   }
 
-  const validateEquation = (equation, variableMapping) => {
-    const variableNames = variableMapping.map((variable) => variable.alias);
+  const validateEquation = (equation, variableMap) => {
+    const variableNames = variableMap.map((variable) => variable.alias);
     console.log(variableNames);
 
     const allVariablesReferenced = variableNames.every((variableName) =>
@@ -138,7 +139,8 @@ function Index() {
     console.log(equation);
 
     const extractVariables = (equation) => {
-      return equation.match(/[A-Z]+\d+/g) || [];
+      const uniqueMatches = [...new Set(equation.match(/[A-Z]+\d+/g) || [])];
+      return uniqueMatches;
     };
 
     const equationVariables = extractVariables(equation);
@@ -162,7 +164,7 @@ function Index() {
       alias: `V${index + 1}`,
     }));
 
-    setVariableMapping(mapping);
+    setVariableMap(mapping);
   };
 
   const [Model, { error, isSuccess }] = useSaveModelMutation({
@@ -177,10 +179,10 @@ function Index() {
       ...values,
       variables: selectedVariables,
       model: equation,
-      variableMapping,
+      variableMap,
     };
 
-    const validationResults = validateEquation(equation, variableMapping);
+    const validationResults = validateEquation(equation, variableMap);
 
     if (typeof validationResults === "string") {
       setErrors(validationResults);
@@ -190,10 +192,11 @@ function Index() {
         `Equation validation failed. Missing variables: ${missingVariables}`
       );
     } else {
+      console.log(updatedValues);
       await rtkMutation(Model, updatedValues);
       refetch();
       form.reset();
-      setVariableMapping([]);
+      setVariableMap([]);
       setEquation("");
       console.log("true submitted!");
     }
@@ -219,10 +222,10 @@ function Index() {
       ...values,
       variables: selectedVariables,
       model: equation,
-      variableMapping,
+      variableMap,
     };
 
-    const validationResults = validateEquation(equation, variableMapping);
+    const validationResults = validateEquation(equation, variableMap);
 
     if (typeof validationResults === "string") {
       setErrors(validationResults);
@@ -264,7 +267,14 @@ function Index() {
       },
       {
         Header: "Model",
-        accessor: "model",
+        // accessor: "model",
+        accessor: (row) => {
+          return (
+            <>
+              <StaticMathField>{row.model}</StaticMathField>
+            </>
+          );
+        },
       },
       {
         Header: "Nature of output",
@@ -315,7 +325,7 @@ function Index() {
                     className="btn btn-sm dropdown-item"
                     onClick={() => handleDelete(row.original._id)}
                   >
-                    <AiOutlineDeleteRow size={"20"} /> Delete
+                    <FiToggleLeft size={"20"} /> Delete
                   </button>
                 </li> */}
 
@@ -678,10 +688,10 @@ function Index() {
                         )}
                     </div>
 
-                    {variableMapping && variableMapping.length > 0 ? (
+                    {variableMap && variableMap.length > 0 ? (
                       <div className="mb-4">
                         <p>Variable Mapping:</p>
-                        {variableMapping.map((variable) => (
+                        {variableMap.map((variable) => (
                           <p key={variable.id}>
                             {`${variable.alias} = ${variable.name}`}
                           </p>
@@ -915,10 +925,10 @@ function Index() {
                         )}
                     </div>
 
-                    {variableMapping && variableMapping.length > 0 ? (
+                    {variableMap && variableMap.length > 0 ? (
                       <div className="mb-4">
                         <p>Variable Mapping:</p>
-                        {variableMapping.map((variable) => (
+                        {variableMap.map((variable) => (
                           <p key={variable.id}>
                             {`${variable.alias} = ${variable.name}`}
                           </p>
