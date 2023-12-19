@@ -17,3 +17,4 @@ export const VARIABLES = "/variables";
 export const CENSORS = "/censor";
 export const MODELS = "/model";
 export const TEST = "/test";
+export const CATEGORY = "/category";

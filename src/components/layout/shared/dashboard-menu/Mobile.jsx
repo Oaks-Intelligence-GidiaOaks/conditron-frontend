@@ -127,7 +127,7 @@ function Mobile() {
                   Model
                 </NavLink>
                 <NavLink
-                  to={routes.ASSETS}
+                  to={routes.RISK_ANALYSIS}
                   exact
                   activeclassname="active"
                   className="menu-links me-5 pb-3"

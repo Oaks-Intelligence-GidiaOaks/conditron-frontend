@@ -129,7 +129,7 @@ function Menu() {
                     Assets
                   </NavLink>
                   <NavLink
-                    to={routes.ASSETS}
+                    to={routes.RISK_ANALYSIS}
                     exact
                     activeclassname="active"
                     className="menu-links me-4"
@@ -163,7 +163,7 @@ function Menu() {
                     Document center
                   </NavLink>
                   <NavLink
-                    to={routes.ASSETS}
+                    to={routes.SETTINGS}
                     exact
                     activeclassname="active"
                     className="menu-links me-4"

@@ -12,6 +12,8 @@
   "dependencies": {
     "@popperjs/core": "^2.11.8",
     "@reduxjs/toolkit": "^1.9.7",
+    "@rpldy/upload-drop-zone": "^1.7.0",
+    "@rpldy/uploady": "^1.7.0",
     "bootstrap": "^5.3.2",
     "brainly-style-guide": "^161.2.0",
     "dotenv": "^16.3.1",

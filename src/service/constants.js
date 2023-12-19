@@ -15,3 +15,5 @@ export const CENSOR = "sensor";
 export const SENSOR_DISABLE = "sensor/disable";
 export const MODELS = "model";
 export const MODELS_DISABLE = "model/disable";
+export const CATEGORY = "category";
+export const ASSET = "asset";

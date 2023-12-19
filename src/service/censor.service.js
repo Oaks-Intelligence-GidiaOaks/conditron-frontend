@@ -21,6 +21,14 @@ export const censorsApiSlice = apiSlice.injectEndpoints({
       providesTags: ["Censor"],
     }),
 
+    getAllCensor: builder.query({
+      query: () => ({
+        url: "sensor/data",
+        method: "GET",
+      }),
+      providesTags: ["Censor"],
+    }),
+
     deleteCensors: builder.mutation({
       query: ({ id }) => ({
         url: `${CENSOR}/${id}`,
@@ -52,6 +60,7 @@ export const censorsApiSlice = apiSlice.injectEndpoints({
 export const {
   useSaveCensorsMutation,
   useGetCensorsQuery,
+  useGetAllCensorQuery,
   useDeleteCensorsMutation,
   useUpdateCensorsMutation,
   useDisableCensorsMutation,

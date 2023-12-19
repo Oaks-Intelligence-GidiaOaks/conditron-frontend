@@ -5,8 +5,10 @@ const rtkMutation = async (request, credentials) => {
   try {
     const result = await request(credentials).unwrap();
     data = result.data;
+    console.log("API Response:", result);
   } catch (error) {
     errorData = formatErrorResponse(error);
+    console.error("API Error:", errorData);
   }
 
   return { data, errorData };

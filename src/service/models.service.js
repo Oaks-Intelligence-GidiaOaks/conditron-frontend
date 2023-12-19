@@ -21,6 +21,14 @@ export const modelsApiSlice = apiSlice.injectEndpoints({
       providesTags: ["Model"],
     }),
 
+    getAllModels: builder.query({
+      query: () => ({
+        url: "model/data",
+        method: "GET",
+      }),
+      providesTags: ["Model"],
+    }),
+
     deleteModel: builder.mutation({
       query: ({ id }) => ({
         url: `${MODELS}/${id}`,
@@ -52,6 +60,7 @@ export const modelsApiSlice = apiSlice.injectEndpoints({
 export const {
   useSaveModelMutation,
   useGetModelQuery,
+  useGetAllModelsQuery,
   useDeleteModelMutation,
   useUpdateModelMutation,
   useDisableModelsMutation,
