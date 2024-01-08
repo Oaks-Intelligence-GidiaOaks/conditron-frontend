@@ -127,11 +127,11 @@ function Index() {
         Header: "Category Name",
         accessor: "category_name",
       },
-      {
-        Header: "Variables",
-        accessor: (row) =>
-          row.variables.map((variable) => variable.variable_name).join(", "),
-      },
+      // {
+      //   Header: "Variables",
+      //   accessor: (row) =>
+      //     row.variables.map((variable) => variable.variable_name).join(", "),
+      // },
       {
         Header: "Action",
         accessor: "",

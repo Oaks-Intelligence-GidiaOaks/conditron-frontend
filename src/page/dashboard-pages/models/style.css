@@ -1,8 +1,8 @@
 .mq-editable-field {
   width: 100%;
-  height: 50px;
-  padding: 10px;
-  font-size: 20px;
+  height: 100px !important;
+  padding: 5px !important;
+  /* font-size: 20px; */
 }
 
 .tex-button {
@@ -17,4 +17,15 @@
 .tex-button svg {
   width: 30px;
   height: 30px;
+}
+.css-b62m3t-container {
+  border-radius: 5px !important;
+  border: 1px solid #9197b3 !important;
+  background: #fff !important;
+  color: #212121 !important;
+  font-family: Poppins;
+  font-size: 15px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
 }

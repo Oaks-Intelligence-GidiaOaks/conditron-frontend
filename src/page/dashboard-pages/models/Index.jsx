@@ -29,12 +29,11 @@ import { FiToggleLeft, FiToggleRight } from "react-icons/fi";
 import { LuClipboardEdit } from "react-icons/lu";
 // import { AiOutlineDeleteRow } from "react-icons/ai";
 // import { MathsQuill } from "../../../components/widget";
-
+import Swal from "sweetalert2";
 import { addStyles, EditableMathField, StaticMathField } from "react-mathquill";
 import TexSymbols from "./TexSymbols";
 import "./style.css";
 addStyles();
-import { parse } from "mathjs";
 
 const constraints = {
   model_name: {
@@ -183,6 +182,7 @@ function Index() {
     };
 
     const validationResults = validateEquation(equation, variableMap);
+    console.log(updatedValues);
 
     if (typeof validationResults === "string") {
       setErrors(validationResults);
@@ -192,13 +192,26 @@ function Index() {
         `Equation validation failed. Missing variables: ${missingVariables}`
       );
     } else {
-      console.log(updatedValues);
-      await rtkMutation(Model, updatedValues);
-      refetch();
-      form.reset();
-      setVariableMap([]);
-      setEquation("");
-      console.log("true submitted!");
+      const result = await Swal.fire({
+        title: "Confirm Submission",
+        text: "Are you sure you want to submit the form?",
+        icon: "question",
+        showCancelButton: true,
+        confirmButtonText: "Yes, submit it!",
+        cancelButtonText: "No, cancel!",
+      });
+
+      if (result.isConfirmed) {
+        console.log(updatedValues);
+        await rtkMutation(Model, updatedValues);
+        refetch();
+        form.reset();
+        setVariableMap([]);
+        setEquation("");
+        console.log("Form submitted!");
+      } else {
+        console.log("Form submission cancelled by the user.");
+      }
     }
   };
 
@@ -701,7 +714,7 @@ function Index() {
 
                     <div className="mb-5">
                       <label htmlFor="equation" className="form-label">
-                        Enter Equation
+                        Type Equation or Paste Latex expression
                       </label>
                       <EditableMathField
                         latex={equation}

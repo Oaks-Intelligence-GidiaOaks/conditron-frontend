@@ -12,7 +12,6 @@ import { ClipLoader } from "react-spinners";
 import React, { useMemo, useState, useEffect } from "react";
 import { CiMenuKebab } from "react-icons/ci";
 import "bootstrap/dist/js/bootstrap.bundle.min.js";
-import { FiToggleLeft, FiToggleRight } from "react-icons/fi";
 import { LuClipboardEdit } from "react-icons/lu";
 import { AiOutlineDeleteRow } from "react-icons/ai";
 import {
@@ -30,6 +29,9 @@ import { useGetAllCategoryQuery } from "../../../service/category.service";
 import { useGetAllCensorQuery } from "../../../service/censor.service";
 import { useGetAllModelsQuery } from "../../../service/models.service";
 import CustomFileUploader from "../../../utils/CustomFileUploader";
+import Swal from "sweetalert2";
+import { extractDate } from "../../../utils/extractDate";
+import MapComponent from "../../../utils/Map";
 
 const constraints = {
   asset_name: {
@@ -62,8 +64,13 @@ const constraints = {
 };
 
 function Index() {
+  const [latitude, setLatitude] = useState("");
+  const [longitude, setLongitude] = useState("");
+  const [isMapVisible, setIsMapVisible] = useState(false);
+
   const { data: categoryData } = useGetAllCategoryQuery();
   const category = categoryData?.categorys;
+  // console.log(category);
 
   const { data: sensorData } = useGetAllCensorQuery();
   const sensors = sensorData?.sensors;
@@ -87,6 +94,7 @@ function Index() {
 
   const openEditModal = (rowData) => {
     setEditRowData(rowData);
+    console.log(rowData);
   };
 
   const closeEditModal = () => {
@@ -116,39 +124,84 @@ function Index() {
 
     // Map sensors to an array of strings
     const selectedSensors = values.sensors.map((sensors) => sensors.value);
+    const sensors = JSON.stringify(selectedSensors);
 
     // Create a copy of values with updated variables
-    const updatedValues = { ...values, sensors: selectedSensors };
+    const updatedValues = {
+      ...values,
+      sensors,
+      // asset_image: values.asset_image,
+      model: values.model.value,
+      category: values.category?.value,
+    };
 
-    console.log(updatedValues);
+    const result = await Swal.fire({
+      title: "Confirm Submission",
+      text: "Are you sure you want to update the record?",
+      icon: "question",
+      showCancelButton: true,
+      confirmButtonText: "Yes, submit it!",
+      cancelButtonText: "No, cancel!",
+    });
 
-    // try {
-    //   await rtkMutation(updateAsset, { id, data: updatedValues });
-    //   showAlert("Great!", "Asset has been updated Successfully", "success");
-    //   closeEditModal();
-    // } catch (error) {
-    //   console.error("Unexpected error during update:", error);
-    //   showAlert("Oops", "An unexpected error occurred", "error");
-    // }
+    if (result.isConfirmed) {
+      try {
+        await rtkMutation(updateAsset, { id, data: updatedValues });
+        showAlert("Great!", "Asset has been updated Successfully", "success");
+        closeEditModal();
+      } catch (error) {
+        console.error("Unexpected error during update:", error);
+        showAlert("Oops", "An unexpected error occurred", "error");
+      }
+    } else {
+      console.log("Form submission cancelled by the user.");
+    }
   };
 
   const [Asset, { error, isSuccess }] = useSaveAssetMutation({
     provideTag: ["Asset"],
   });
 
+  const handleLoadMap = (formValues) => {
+    const { latitude: lat, longitude: lng } = formValues;
+    setLatitude(lat);
+    setLongitude(lng);
+    setIsMapVisible(true);
+  };
+
+  useEffect(() => {
+    console.log("Latitude:", latitude);
+    console.log("Longitude:", longitude);
+  }, [latitude, longitude]);
+
   const onSubmit = async (values, form) => {
     const selectedSensors = values.sensors.map((sensor) => sensor.value);
+    const sensors = JSON.stringify(selectedSensors);
+    console.log(selectedSensors);
     const updatedValues = {
       ...values,
-      asset_image: values.asset_image.path,
-      sensors: selectedSensors,
+      sensors,
+      asset_image: values.asset_image,
       model: values.model.value,
       category: values.category?.value,
     };
-    await rtkMutation(Asset, updatedValues);
+    console.log(updatedValues);
+    const result = await Swal.fire({
+      title: "Confirm Submission",
+      text: "Are you sure you want to submit the form?",
+      icon: "question",
+      showCancelButton: true,
+      confirmButtonText: "Yes, submit it!",
+      cancelButtonText: "No, cancel!",
+    });
 
-    refetch();
-    // form.reset();
+    if (result.isConfirmed) {
+      await rtkMutation(Asset, updatedValues);
+      refetch();
+      form.reset();
+    } else {
+      console.log("Form submission cancelled by the user.");
+    }
   };
 
   useEffect(() => {
@@ -172,15 +225,31 @@ function Index() {
       {
         Header: "Category Name",
         accessor: (row) =>
-          row.category.map((category) => category.category_name).join(", "),
+          Array.isArray(row.category)
+            ? row.category.map((category) => category.category_name).join(", ")
+            : row.category && row.category.category_name
+            ? row.category.category_name
+            : "",
+        show: (instance) =>
+          instance.data.some(
+            (row) =>
+              row.category &&
+              (Array.isArray(row.category) || row.category.category_name)
+          ),
       },
+
       {
         Header: "Installation Date",
         accessor: "installed_date",
+        Cell: ({ cell: { value } }) => <span>{extractDate(value)}</span>,
       },
       {
-        Header: "Location(Latitude, Longitude)",
-        accessor: "longitude, latitude",
+        Header: "Longitude",
+        accessor: "longitude",
+      },
+      {
+        Header: "Latitude",
+        accessor: "latitude",
       },
       {
         Header: "Action",
@@ -244,7 +313,7 @@ function Index() {
   } = useTable(
     {
       columns: COLUMNS,
-      data: useMemo(() => assetData?.sensors || [], [assetData]),
+      data: useMemo(() => assetData?.assets || [], [assetData]),
       initialState: { pageIndex: 0, pageSize: 10 },
       manualPagination: true,
       pageCount: calculatedPageCount,
@@ -560,55 +629,18 @@ function Index() {
                           htmlFor="exampleFormControlInput1"
                           className="form-label"
                         >
-                          Enter Longitude
-                        </label>
-                        <Field
-                          name="longitude"
-                          component="input"
-                          type="text"
-                          className="form-control variable-input"
-                        />
-                        {form.getState().submitFailed &&
-                          form.getState().errors.longitude && (
-                            <span className="text-danger">
-                              {form.getState().errors.longitude}
-                            </span>
-                          )}
-                      </div>
-                      <div className="col">
-                        <label
-                          htmlFor="exampleFormControlInput1"
-                          className="form-label"
-                        >
-                          Enter Latitude
-                        </label>
-                        <Field
-                          name="latitude"
-                          component="input"
-                          type="text"
-                          className="form-control variable-input"
-                        />
-                        {form.getState().submitFailed &&
-                          form.getState().errors.latitude && (
-                            <span className="text-danger">
-                              {form.getState().errors.latitude}
-                            </span>
-                          )}
-                      </div>
-
-                      <div className="col">
-                        <label
-                          htmlFor="exampleFormControlInput1"
-                          className="form-label"
-                        >
                           Enter Data Source
                         </label>
                         <Field
                           name="data_source"
-                          component="input"
+                          component="select"
                           type="text"
                           className="form-control variable-input"
-                        />
+                        >
+                          <option value="">-- select --</option>
+                          <option value="Sensor">Sensor</option>
+                          <option value="Database">Database</option>
+                        </Field>
                         {form.getState().submitFailed &&
                           form.getState().errors.data_source && (
                             <span className="text-danger">
@@ -637,29 +669,107 @@ function Index() {
                           )}
                       </div>
                     </div>
-                    <div className="row mb-5">
+
+                    <div className="row mb-3">
                       <div className="col">
                         <label
                           htmlFor="exampleFormControlInput1"
                           className="form-label"
                         >
-                          Select Category <small>(optional)</small>
+                          Enter Latitude
                         </label>
                         <Field
-                          name="category"
-                          component={({ input }) => (
-                            <Select
-                              {...input}
-                              //   isMulti
-                              options={category?.map((row) => ({
-                                value: row._id,
-                                label: row.category_name,
-                              }))}
-                              placeholder="-- Select category --"
-                            />
-                          )}
+                          name="latitude"
+                          component="input"
+                          type="text"
+                          className="form-control variable-input"
                         />
+                        {form.getState().submitFailed &&
+                          form.getState().errors.latitude && (
+                            <span className="text-danger">
+                              {form.getState().errors.latitude}
+                            </span>
+                          )}
                       </div>
+                      <div className="col">
+                        <label
+                          htmlFor="exampleFormControlInput1"
+                          className="form-label"
+                        >
+                          Enter Longitude
+                        </label>
+                        <Field
+                          name="longitude"
+                          component="input"
+                          type="text"
+                          className="form-control variable-input"
+                        />
+                        {form.getState().submitFailed &&
+                          form.getState().errors.longitude && (
+                            <span className="text-danger">
+                              {form.getState().errors.longitude}
+                            </span>
+                          )}
+                      </div>
+                    </div>
+                    <div className="row mb-3">
+                      <div className="col">
+                        <div className="d-flex justify-content-center gap-3 pt-3 pb-3">
+                          <button
+                            className="btn btn-outline-dark btn-sm text-sm"
+                            onClick={() =>
+                              handleLoadMap(form.getState().values)
+                            }
+                          >
+                            Load cordinates
+                          </button>
+
+                          {latitude && longitude ? (
+                            <button
+                              className="btn btn-outline-success btn-sm text-sm"
+                              onClick={() => setIsMapVisible(!isMapVisible)}
+                            >
+                              toggle map
+                            </button>
+                          ) : null}
+                        </div>
+
+                        {isMapVisible && (
+                          <div className="card card-body">
+                            <MapComponent
+                              latitude={latitude}
+                              longitude={longitude}
+                            />
+                          </div>
+                        )}
+                      </div>
+                    </div>
+
+                    <div className="row mb-5">
+                      {category && category.length > 0 && (
+                        <div className="col">
+                          <label
+                            htmlFor="exampleFormControlInput1"
+                            className="form-label"
+                          >
+                            Select Category <small>(optional)</small>
+                          </label>
+                          <Field
+                            name="category"
+                            component={({ input }) => (
+                              <Select
+                                {...input}
+                                //   isMulti
+                                options={category?.map((row) => ({
+                                  value: row._id,
+                                  label: row.category_name,
+                                }))}
+                                placeholder="-- Select category --"
+                              />
+                            )}
+                          />
+                        </div>
+                      )}
 
                       <div className="col">
                         <label
@@ -778,7 +888,8 @@ function Index() {
                   asset_type: editRowData?.asset_type || "",
                   asset_image: editRowData?.asset_image || "",
                   asset_value: editRowData?.asset_value || "",
-                  installed_date: editRowData?.installed_date || "",
+                  installed_date:
+                    extractDate(editRowData?.installed_date) || "",
                   longitude: editRowData?.longitude || "",
                   latitude: editRowData?.latitude || "",
                   data_source: editRowData?.data_source || "",
@@ -786,29 +897,40 @@ function Index() {
                     value: sensors._id,
                     label: sensors.sensor_name,
                   })),
-                  model: (editRowData?.model || []).map((model) => ({
-                    value: model._id,
-                    label: model.model_name,
-                  })),
-                  category: (editRowData?.category || []).map((category) => ({
-                    value: category._id,
-                    label: category.category_name,
-                  })),
+                  model: Array.isArray(editRowData?.model)
+                    ? editRowData?.model.map((model) => ({
+                        value: model._id,
+                        label: model.model_name,
+                      }))
+                    : editRowData?.model
+                    ? [
+                        {
+                          value: editRowData.model._id,
+                          label: editRowData.model.model_name,
+                        },
+                      ]
+                    : [],
+
+                  category: Array.isArray(editRowData?.category)
+                    ? editRowData.category.map((category) => ({
+                        value: category._id,
+                        label: category.category_name,
+                      }))
+                    : editRowData?.category
+                    ? [
+                        {
+                          value: editRowData.category._id,
+                          label: editRowData.category.category_name,
+                        },
+                      ]
+                    : [],
                 }}
                 render={({ handleSubmit, form, submitting }) => (
                   <form onSubmit={handleSubmit}>
                     <div className="mb-3">
-                      <label
-                        htmlFor="exampleFormControlInput1"
-                        className="form-label"
-                      >
-                        Add asset Image
-                      </label>
-                      <Field
+                      <CustomFileUploader
                         name="asset_image"
-                        component="input"
-                        type="file"
-                        className="form-control variable-input h-auto"
+                        label="Update asset Image"
                       />
                       {form.getState().submitFailed &&
                         form.getState().errors.asset_image && (
@@ -931,10 +1053,13 @@ function Index() {
                         </label>
                         <Field
                           name="data_source"
-                          component="input"
+                          component="select"
                           type="text"
                           className="form-control variable-input"
-                        />
+                        >
+                          <option value="Sensor">Sensor</option>
+                          <option value="Database">Database</option>
+                        </Field>
                         {form.getState().submitFailed &&
                           form.getState().errors.data_source && (
                             <span className="text-danger">
@@ -964,34 +1089,30 @@ function Index() {
                       </div>
                     </div>
                     <div className="row mb-5">
-                      <div className="col">
-                        <label
-                          htmlFor="exampleFormControlInput1"
-                          className="form-label"
-                        >
-                          Select Category
-                        </label>
-                        <Field
-                          name="category"
-                          component={({ input }) => (
-                            <Select
-                              {...input}
-                              //   isMulti
-                              options={category?.map((row) => ({
-                                value: row._id,
-                                label: row.category_name,
-                              }))}
-                              placeholder="-- Select category --"
-                            />
-                          )}
-                        />
-                        {form.getState().submitFailed &&
-                          form.getState().errors.category && (
-                            <span className="text-danger">
-                              {form.getState().errors.category}
-                            </span>
-                          )}
-                      </div>
+                      {category && category.length > 0 && (
+                        <div className="col">
+                          <label
+                            htmlFor="exampleFormControlInput1"
+                            className="form-label"
+                          >
+                            Select Category <small>(optional)</small>
+                          </label>
+                          <Field
+                            name="category"
+                            component={({ input }) => (
+                              <Select
+                                {...input}
+                                //   isMulti
+                                options={category?.map((row) => ({
+                                  value: row._id,
+                                  label: row.category_name,
+                                }))}
+                                placeholder="-- Select category --"
+                              />
+                            )}
+                          />
+                        </div>
+                      )}
 
                       <div className="col">
                         <label
@@ -1067,7 +1188,7 @@ function Index() {
                             </span>
                           </>
                         ) : (
-                          "Save"
+                          "Update"
                         )}
                       </button>
                     </div>
@@ -1084,6 +1205,7 @@ function Index() {
 
 Index.propTypes = {
   row: PropTypes.object,
+  cell: PropTypes.object,
 };
 
 export default Index;

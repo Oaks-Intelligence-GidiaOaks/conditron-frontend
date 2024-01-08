@@ -47,4 +47,8 @@ export const SymbolsIcon = [
     icon: "beta",
     data: "\\beta",
   },
+  {
+    icon: "summation",
+    data: "\\sum_{3}^{5}",
+  },
 ];

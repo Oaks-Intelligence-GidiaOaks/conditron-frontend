@@ -12,5 +12,6 @@ export { default as VariablesPage } from "./dashboard-pages/variables/Index";
 export { default as CensorsPage } from "./dashboard-pages/censors/Index";
 export { default as ModelsPage } from "./dashboard-pages/models/Index";
 export { default as TestPage } from "./dashboard-pages/test/Index";
+export { default as MapPage } from "./dashboard-pages/test/map/Map";
 export { default as CategoryPage } from "./dashboard-pages/category/Index";
 export { default as assetsPage } from "./dashboard-pages/assets/Index";

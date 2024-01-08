@@ -1,5 +1,6 @@
 import { useField } from "react-final-form";
 import { useDropzone } from "react-dropzone";
+import PropTypes from "prop-types";
 
 const CustomFileUploader = ({ name, label }) => {
   const { input, meta } = useField(name);
@@ -16,7 +17,11 @@ const CustomFileUploader = ({ name, label }) => {
       <div
         {...getRootProps()}
         className="dropzone-container rounded p-3 w-50 mx-auto d-flex justify-content-center align-items-center bg-light"
-        style={{ border: "1px dashed grey", height: "140px" }}
+        style={{
+          border: "1px dashed grey",
+          height: "140px",
+          cursor: "pointer",
+        }}
       >
         <input {...getInputProps()} />
         {input.value ? (
@@ -44,6 +49,11 @@ const CustomFileUploader = ({ name, label }) => {
       )}
     </div>
   );
+};
+
+CustomFileUploader.propTypes = {
+  name: PropTypes.string.isRequired,
+  label: PropTypes.string,
 };
 
 export default CustomFileUploader;

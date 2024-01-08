@@ -14,6 +14,7 @@ import {
   CensorsPage,
   ModelsPage,
   TestPage,
+  MapPage,
   CategoryPage,
   assetsPage,
 } from "../page";
@@ -31,7 +32,7 @@ const RouterConfig = () => {
           path={routes.LOGIN}
           element={<PublicRoute component={LoginPage} />}
         />
-        <Route path={routes.TEST} element={<TestPage />} />
+        <Route path={routes.TEST} element={<MapPage />} />
 
         <Route path={routes.REGISTER} element={<RegisterPage />} />
         <Route path={routes.SETUP_PASSWORD} element={<SetupPasswordPage />} />
