@@ -13,6 +13,7 @@ const apiSlice = createApi({
     "Model",
     "Category",
     "Asset",
+    "Risk",
   ],
   endpoints: (builder) => ({}),
   keepUnusedDataFor: 50000,

@@ -15,3 +15,4 @@ export { default as TestPage } from "./dashboard-pages/test/Index";
 export { default as MapPage } from "./dashboard-pages/test/map/Map";
 export { default as CategoryPage } from "./dashboard-pages/category/Index";
 export { default as assetsPage } from "./dashboard-pages/assets/Index";
+export { default as riskAnalysisPage } from "./dashboard-pages/risk/Index";

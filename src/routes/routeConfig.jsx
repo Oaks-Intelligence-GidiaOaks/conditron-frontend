@@ -17,6 +17,7 @@ import {
   MapPage,
   CategoryPage,
   assetsPage,
+  riskAnalysisPage,
 } from "../page";
 
 import ProtectedRoute from "../components/protected/ProtectedRoute";
@@ -36,6 +37,10 @@ const RouterConfig = () => {
 
         <Route path={routes.REGISTER} element={<RegisterPage />} />
         <Route path={routes.SETUP_PASSWORD} element={<SetupPasswordPage />} />
+        <Route
+          path={routes.RISK_ANALYSIS}
+          element={<ProtectedRoute component={riskAnalysisPage} />}
+        />
         <Route
           path={routes.ASSETS}
           element={<ProtectedRoute component={assetsPage} />}

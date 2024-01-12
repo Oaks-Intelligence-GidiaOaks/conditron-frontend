@@ -17,3 +17,4 @@ export const MODELS = "model";
 export const MODELS_DISABLE = "model/disable";
 export const CATEGORY = "category";
 export const ASSET = "asset";
+export const RISK_ANALYSIS = "risk";
