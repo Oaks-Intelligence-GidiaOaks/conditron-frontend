@@ -61,6 +61,9 @@ const constraints = {
   model: {
     presence: true,
   },
+  priority: {
+    presence: true,
+  },
 };
 
 function Index() {
@@ -621,6 +624,27 @@ function Index() {
                             </span>
                           )}
                       </div>
+
+                      <div className="col">
+                        <label
+                          htmlFor="exampleFormControlInput1"
+                          className="form-label"
+                        >
+                          Select asset priority
+                        </label>
+                        <Field
+                          name="priority"
+                          component="input"
+                          type="range"
+                          className="form-range variable-input h-50" min="0" max="5" id="customRange2"
+                        />
+                        {form.getState().submitFailed &&
+                          form.getState().errors.priority && (
+                            <span className="text-danger">
+                              {form.getState().errors.priority}
+                            </span>
+                          )}
+                      </div>
                     </div>
 
                     <div className="row mb-3">
@@ -888,6 +912,7 @@ function Index() {
                   asset_type: editRowData?.asset_type || "",
                   asset_image: editRowData?.asset_image || "",
                   asset_value: editRowData?.asset_value || "",
+                  priority: editRowData?.priority || "",
                   installed_date:
                     extractDate(editRowData?.installed_date) || "",
                   longitude: editRowData?.longitude || "",
@@ -997,6 +1022,27 @@ function Index() {
                           form.getState().errors.asset_value && (
                             <span className="text-danger">
                               {form.getState().errors.asset_value}
+                            </span>
+                          )}
+                      </div>
+
+                      <div className="col">
+                        <label
+                          htmlFor="exampleFormControlInput1"
+                          className="form-label"
+                        >
+                          Select asset priority
+                        </label>
+                        <Field
+                          name="priority"
+                          component="input"
+                          type="range"
+                          className="form-range variable-input h-50" min="0" max="5" id="customRange2"
+                        />
+                        {form.getState().submitFailed &&
+                          form.getState().errors.priority && (
+                            <span className="text-danger">
+                              {form.getState().errors.priority}
                             </span>
                           )}
                       </div>
