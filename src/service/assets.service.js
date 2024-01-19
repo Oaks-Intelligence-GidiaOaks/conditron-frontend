@@ -1,4 +1,4 @@
-import { ASSET } from "./constants";
+import { ASSET, TOP_VALUED_ASSETS } from "./constants";
 import apiSlice from "./api/apiSlice";
 
 export const censorsApiSlice = apiSlice.injectEndpoints({
@@ -45,6 +45,14 @@ export const censorsApiSlice = apiSlice.injectEndpoints({
       }),
       invalidatesTags: ["Asset"],
     }),
+
+    topValuedAssets: builder.query({
+      query: () => ({
+        url: TOP_VALUED_ASSETS,
+        method: "GET",
+      }),
+      providesTags: ["Asset"],
+    }),
   }),
 });
 
@@ -54,4 +62,5 @@ export const {
   useGetAllAssetsQuery,
   useDeleteAssetMutation,
   useUpdateAssetMutation,
+  useTopValuedAssetsQuery,
 } = censorsApiSlice;

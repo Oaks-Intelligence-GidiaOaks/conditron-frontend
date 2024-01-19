@@ -42,3 +42,4 @@ export const model_active = `${PATH}/model-active.svg`;
 export const model = `${PATH}/model.svg`;
 export const censor_active = `${PATH}/censor-active.svg`;
 export const censor = `${PATH}/censor.svg`;
+export const img_box = `${PATH}/img-box.svg`;

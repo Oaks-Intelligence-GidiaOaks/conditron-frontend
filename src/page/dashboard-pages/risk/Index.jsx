@@ -6,16 +6,11 @@ import { IoIosArrowForward, IoIosArrowBack } from "react-icons/io";
 import { BsChevronDoubleRight, BsChevronDoubleLeft } from "react-icons/bs";
 import { ClipLoader } from "react-spinners";
 import PropTypes from "prop-types";
-import {
-  LineChart,
-  Line,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
-  Legend,
-  ResponsiveContainer,
-} from "recharts";
+import RadarChartExample from "../../../utils/RadarChartExample";
+import BarChartExample from "../../../utils/BarChartExample";
+import QuarterlyChart from "../../../utils/QuarterlyChart";
+import HeatmapChart from "../../../utils/HeatmapChart";
+import LineChartExample from "../../../utils/LineChartExample";
 
 export default function Index() {
   const { data: riskData, isLoading, refetch } = useGetRiskDataQuery();
@@ -204,41 +199,46 @@ export default function Index() {
           <div className="col-lg-12">
             {selectedAsset && selectedRisk && selectedRisk.length > 0 && (
               <>
-                <div className="border card shadow">
-                  <div className="p-3">
-                    <h2>Selected Asset Details</h2>
-                    <p>Asset Name: {selectedAsset.asset_name}</p>
-                    <p>Source: {selectedAsset.data_source}</p>
-                    <div style={{ width: "100%" }}>
-                      <ResponsiveContainer width="100%" height={250}>
-                        <LineChart
-                          data={selectedRisk.map((value) => ({
-                            ...value,
-                            xyz: new Date(value.date).toLocaleString(),
-                            date: new Date(value.date).toLocaleTimeString(),
-                            risk: value.risk.toFixed(2),
-                          }))}
-                          margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
-                        >
-                          <XAxis
-                            dataKey="date"
-                            type="category"
-                            tick={{ fontSize: 12 }}
-                          />
-                          <YAxis tick={{ fontSize: 12 }} />
-                          <CartesianGrid stroke="#eee" strokeDasharray="5 5" />
-                          <Tooltip
-                            contentStyle={{ fontSize: 14 }}
-                            formatter={(value) => [`${value}%`, "Risk"]}
-                          />
-                          <Legend iconSize={14} />
-                          <Line
-                            type="monotone"
-                            dataKey="risk"
-                            stroke="#8884d8"
-                          />
-                        </LineChart>
-                      </ResponsiveContainer>
+                <div className="row justify-content-center">
+                  <div className="col-lg-12">
+                    <div className="card shadow">
+                      <div className="card-body">
+                        <LineChartExample selectedRisk={selectedRisk} />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="row row-cols-1 row-cols-md-2 g-4 pt-4">
+                  <div className="col">
+                    <div className="card h-100 shadow">
+                      <div className="card-body">
+                        <RadarChartExample />
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="col">
+                    <div className="card h-100 shadow">
+                      <div className="card-body">
+                        <BarChartExample />
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="col">
+                    <div className="card h-100 shadow">
+                      <div className="card-body">
+                        <QuarterlyChart />
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="col">
+                    <div className="card h-100 shadow">
+                      <div className="card-body">
+                        <HeatmapChart />
+                      </div>
                     </div>
                   </div>
                 </div>
