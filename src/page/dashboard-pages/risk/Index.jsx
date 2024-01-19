@@ -11,6 +11,7 @@ import BarChartExample from "../../../utils/BarChartExample";
 import QuarterlyChart from "../../../utils/QuarterlyChart";
 import HeatmapChart from "../../../utils/HeatmapChart";
 import LineChartExample from "../../../utils/LineChartExample";
+import io from "socket.io-client";
 
 export default function Index() {
   const { data: riskData, isLoading, refetch } = useGetRiskDataQuery();
@@ -124,6 +125,22 @@ export default function Index() {
   const [selectedRisk, setSelectedRisk] = useState(null);
   console.log(selectedRisk);
 
+  // useEffect(() => {
+  //   const fetchData = async () => {
+  //     await refetch();
+  //     if (riskData?.risks.length > 0) {
+  //       const initialAsset = riskData.risks[1].asset;
+  //       const riskVal = riskData.risks[1].riskValues.slice(-20);
+  //       setSelectedAsset(initialAsset);
+  //       setSelectedRisk(riskVal);
+  //     }
+  //   };
+
+  //   fetchData();
+  // }, [riskData, refetch]);
+
+  const [updateTrigger, setUpdateTrigger] = useState(0);
+
   useEffect(() => {
     const fetchData = async () => {
       await refetch();
@@ -137,10 +154,27 @@ export default function Index() {
 
     fetchData(); // Initial fetch
 
-    const interval = setInterval(fetchData, 60 * 1000); // Fetch data every 1 minute
+    const socket = io("https://conditron-backend-bcb66b436c43.herokuapp.com");
 
-    return () => clearInterval(interval); // Cleanup interval on component unmount
-  }, [riskData, refetch]);
+    socket.on("connect", () => {
+      console.log("Connected to the server!");
+    });
+
+    socket.on("riskValueUpdate", () => {
+      // Trigger the update by changing the state
+      setUpdateTrigger((prev) => prev + 1);
+    });
+
+    socket.on("disconnect", () => {
+      console.log("Disconnected from the server!");
+    });
+
+    // Cleanup function
+    return () => {
+      console.log("Disconnecting from the server...");
+      socket.disconnect();
+    };
+  }, [riskData, refetch, updateTrigger]);
 
   return (
     <>

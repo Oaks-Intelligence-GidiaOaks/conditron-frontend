@@ -23,10 +23,16 @@ export const riskApiSlice = apiSlice.injectEndpoints({
         });
 
         socket.on("riskValueUpdate", (data) => {
-          const riskDataQuery = useGetRiskDataQuery(undefined, {});
+          const riskDataQuery = useGetRiskDataQuery();
+          console.log("Received riskValueUpdate event:", data);
+          console.log("Current riskDataQuery:", riskDataQuery);
 
           // Update the cache with the new data
-          dispatch(riskApiSlice.endpoints.getRiskData.transformResult(data));
+          const transformedData =
+            riskApiSlice.endpoints.getRiskData.transformResult(data);
+          console.log("Transformed data:", transformedData);
+
+          dispatch(transformedData);
           query.invalidateTags(["Risk"]);
         });
 
