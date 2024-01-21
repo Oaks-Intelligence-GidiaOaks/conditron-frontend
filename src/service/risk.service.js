@@ -1,6 +1,7 @@
 import { RISK_ANALYSIS } from "./constants";
 import apiSlice from "./api/apiSlice";
 import io from "socket.io-client";
+import { useSelector } from "react-redux";
 
 export const riskApiSlice = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
@@ -10,8 +11,16 @@ export const riskApiSlice = apiSlice.injectEndpoints({
         method: "GET",
       }),
       providesTags: ["Risk"],
-      subscribe: (query, { subscriptionHooks, dispatch }, orgId) => {
+      subscribe: (query, { subscriptionHooks, dispatch }) => {
         const { useGetRiskDataQuery } = subscriptionHooks;
+
+        const useOrgId = () => {
+          const orgId = useSelector(
+            (state) => state.user?.user?.organization_id?._id
+          );
+          console.log(orgId);
+          return orgId;
+        };
 
         // Connect to socket.io server
         const socket = io(
@@ -20,6 +29,7 @@ export const riskApiSlice = apiSlice.injectEndpoints({
 
         socket.on("connect", () => {
           console.log("Connected to the server!");
+          const orgId = useOrgId();
           socket.emit("join", orgId);
         });
 

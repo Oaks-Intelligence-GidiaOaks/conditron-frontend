@@ -14,12 +14,7 @@ import LineChartExample from "../../../utils/LineChartExample";
 import io from "socket.io-client";
 
 export default function Index() {
-  const [organizationId, setOrganizationId] = useState("");
-  const {
-    data: riskData,
-    isLoading,
-    refetch,
-  } = useGetRiskDataQuery(organizationId);
+  const { data: riskData, isLoading, refetch } = useGetRiskDataQuery();
   console.log(riskData);
 
   const totalCount = riskData?.total || 0;
@@ -137,40 +132,16 @@ export default function Index() {
 
       if (riskData?.risks.length > 0) {
         const initialAsset = riskData.risks[1].asset;
-        const organization_id = initialAsset.organization_id;
         const riskVal = riskData.risks[1].riskValues.slice(-20);
 
         // Use a callback to update state
         setSelectedAsset(initialAsset);
         setSelectedRisk(riskVal);
-        setOrganizationId(organization_id);
-        refetch({ organizationId });
       }
     };
 
     fetchData();
   }, [riskData, refetch]);
-
-  useEffect(() => {
-    if (selectedAsset) {
-      const socket = io("https://conditron-backend-bcb66b436c43.herokuapp.com");
-
-      socket.on("connect", () => {
-        console.log("Connected to the server!");
-        socket.emit("join", selectedAsset.organization_id.toString());
-      });
-
-      socket.on("riskValueUpdate", (data) => {
-        setSelectedRisk(data.riskValues);
-        refetch({ organizationId });
-      });
-
-      return () => {
-        console.log("Disconnecting from the server...");
-        socket.disconnect();
-      };
-    }
-  }, [selectedAsset, organizationId, refetch]);
 
   return (
     <>
