@@ -14,7 +14,7 @@ import { CiMenuKebab } from "react-icons/ci";
 import "bootstrap/dist/js/bootstrap.bundle.min.js";
 import {
   useGetModelQuery,
-  // useDeleteModelMutation,
+  useDeleteModelMutation,
   useSaveModelMutation,
   useUpdateModelMutation,
   useDisableModelsMutation,
@@ -30,10 +30,22 @@ import { LuClipboardEdit } from "react-icons/lu";
 // import { AiOutlineDeleteRow } from "react-icons/ai";
 // import { MathsQuill } from "../../../components/widget";
 import Swal from "sweetalert2";
-import { addStyles, EditableMathField, StaticMathField } from "react-mathquill";
-import TexSymbols from "./TexSymbols";
-import "./style.css";
-addStyles();
+import { MathJax, MathJaxContext } from "better-react-mathjax";
+
+const config = {
+  loader: { load: ["[tex]/html"] },
+  tex: {
+    packages: { "[+]": ["html"] },
+    inlineMath: [
+      ["$", "$"],
+      ["\\(", "\\)"],
+    ],
+    displayMath: [
+      ["$$", "$$"],
+      ["\\[", "\\]"],
+    ],
+  },
+};
 
 const constraints = {
   model_name: {
@@ -97,18 +109,18 @@ function Index() {
     setVariableMap([]);
   };
 
-  // const [deleteModel] = useDeleteModelMutation();
-  // const handleDelete = async (rowId) => {
-  //   try {
-  //     console.log("Deleting row with ID:", rowId);
+  const [deleteModel] = useDeleteModelMutation();
+  const handleDelete = async (rowId) => {
+    try {
+      console.log("Deleting row with ID:", rowId);
 
-  //     await rtkMutation(deleteModel, { id: rowId });
-  //     showAlert("Great!", "Model has been deleted Successfully", "success");
-  //   } catch (error) {
-  //     console.error("Error deleting model:", error);
-  //     showAlert("Error", "An error occurred while deleting the model", "error");
-  //   }
-  // };
+      await rtkMutation(deleteModel, { id: rowId });
+      showAlert("Great!", "Model has been deleted Successfully", "success");
+    } catch (error) {
+      console.error("Error deleting model:", error);
+      showAlert("Error", "An error occurred while deleting the model", "error");
+    }
+  };
 
   const validateForm = (values) => {
     const errors = validate(values, constraints);
@@ -227,37 +239,25 @@ function Index() {
   const handleEditSubmit = async (id, values) => {
     console.log("Edit Form Data:", id, values);
 
-    const selectedVariables = values.variables.map(
-      (variable) => variable.value
-    );
+    // const selectedVariables = values.variables.map(
+    //   (variable) => variable.value
+    // );
 
     const updatedValues = {
       ...values,
-      variables: selectedVariables,
-      model: equation,
-      variableMap,
+      // variables: selectedVariables,
+      // model: equation,
     };
 
-    const validationResults = validateEquation(equation, variableMap);
+    try {
+      console.log(updatedValues);
 
-    if (typeof validationResults === "string") {
-      setErrors(validationResults);
-    } else if (!validationResults.isValid) {
-      const missingVariables = validationResults.missingVariables.join(", ");
-      setErrors(
-        `Equation validation failed. Missing variables: ${missingVariables}`
-      );
-    } else {
-      try {
-        console.log(updatedValues);
-
-        await rtkMutation(updateModel, { id, data: updatedValues });
-        showAlert("Great!", "Model has been updated Successfully", "success");
-        closeEditModal();
-      } catch (error) {
-        console.error("Unexpected error during update:", error);
-        showAlert("Oops", "An unexpected error occurred", "error");
-      }
+      await rtkMutation(updateModel, { id, data: updatedValues });
+      showAlert("Great!", "Model has been updated Successfully", "success");
+      closeEditModal();
+    } catch (error) {
+      console.error("Unexpected error during update:", error);
+      showAlert("Oops", "An unexpected error occurred", "error");
     }
   };
 
@@ -284,7 +284,9 @@ function Index() {
         accessor: (row) => {
           return (
             <>
-              <StaticMathField>{row.model}</StaticMathField>
+              <MathJaxContext config={config}>
+                <MathJax hideUntilTypeset={"first"}>{row.model}</MathJax>
+              </MathJaxContext>
             </>
           );
         },
@@ -333,14 +335,14 @@ function Index() {
                   </button>
                 </li>
 
-                {/* <li>
+                <li>
                   <button
                     className="btn btn-sm dropdown-item"
                     onClick={() => handleDelete(row.original._id)}
                   >
                     <FiToggleLeft size={"20"} /> Delete
                   </button>
-                </li> */}
+                </li>
 
                 {row.original.disabled === false ? (
                   <li>
@@ -408,6 +410,18 @@ function Index() {
     setPageNumber(pageIndex + 1);
     refetch({ page: pageIndex + 1, pageSize });
   }, [refetch, pageIndex, pageSize]);
+
+  const handleButtonClick = () => {
+    if (window.textarea) {
+      const latexElement = document.getElementById("latex");
+      const latexContent = latexElement?.textContent || latexElement?.innerText;
+      const cleanContent = latexContent.match(/\[(.*?)\]/)[1];
+      console.log(latexContent);
+      setEquation(latexContent);
+    } else {
+      console.error("Textarea is not defined.");
+    }
+  };
 
   return (
     <>
@@ -716,19 +730,29 @@ function Index() {
                       <label htmlFor="equation" className="form-label">
                         Type Equation or Paste Latex expression
                       </label>
-                      <EditableMathField
-                        latex={equation}
-                        onChange={(mathField) => {
-                          setEquation(mathField.latex());
-                          setErrors(null);
-                        }}
-                      />
+                      <div id="equation-editor">
+                        <div id="history"></div>
+                        <div id="toolbar"></div>
+                        <div
+                          id="latexInput"
+                          placeholder="Write Equation here..."
+                        ></div>
+                        <div id="equation-output">
+                          <img id="output" />
+                        </div>
+                      </div>
+
+                      <input type="hidden" id="latex" />
+                      <button
+                        onClick={handleButtonClick}
+                        className="btn btn-success btn-sm mt-3"
+                      >
+                        save equation
+                      </button>
+
                       {errors && (
                         <div className="text-danger text-sm">{errors}</div>
                       )}
-                      <hr />
-                      <TexSymbols onClick={InsertSymbol} />
-                      <hr />
                     </div>
 
                     <div className="text-center">
@@ -791,10 +815,10 @@ function Index() {
                   nature_of_output: editRowData?.nature_of_output || "",
                   range: editRowData?.range || "",
                   no_of_operation_zone: editRowData?.no_of_operation_zone || "",
-                  // variables: (editRowData?.variables || []).map((variable) => ({
-                  //   value: variable._id,
-                  //   label: variable.variable_name,
-                  // })),
+                  variables: (editRowData?.variables || []).map((variable) => ({
+                    value: variable._id,
+                    label: variable.variable_name,
+                  })),
                 }}
                 render={({ handleSubmit, form, submitting }) => (
                   <form onSubmit={handleSubmit}>
@@ -897,7 +921,7 @@ function Index() {
                       </div>
                     </div>
 
-                    <div className="mb-5">
+                    {/* <div className="mb-5">
                       <label
                         htmlFor="exampleFormControlInput1"
                         className="form-label"
@@ -936,9 +960,9 @@ function Index() {
                             {form.getState().errors.variables}
                           </span>
                         )}
-                    </div>
+                    </div> */}
 
-                    {variableMap && variableMap.length > 0 ? (
+                    {/* {variableMap && variableMap.length > 0 ? (
                       <div className="mb-4">
                         <p>Variable Mapping:</p>
                         {variableMap.map((variable) => (
@@ -947,26 +971,7 @@ function Index() {
                           </p>
                         ))}
                       </div>
-                    ) : null}
-
-                    <div className="mb-5">
-                      <label htmlFor="equation" className="form-label">
-                        Enter Equation
-                      </label>
-                      <EditableMathField
-                        latex={editRowData?.model || ""}
-                        onChange={(mathField) => {
-                          setEquation(mathField.latex());
-                          setErrors(null);
-                        }}
-                      />
-                      {errors && (
-                        <div className="text-danger text-sm">{errors}</div>
-                      )}
-                      <hr />
-                      <TexSymbols onClick={InsertSymbol} />
-                      <hr />
-                    </div>
+                    ) : null} */}
 
                     <div className="text-center">
                       <button

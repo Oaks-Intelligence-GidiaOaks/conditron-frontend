@@ -14,7 +14,12 @@ import LineChartExample from "../../../utils/LineChartExample";
 import io from "socket.io-client";
 
 export default function Index() {
-  const { data: riskData, isLoading, refetch } = useGetRiskDataQuery();
+  const [organizationId, setOrganizationId] = useState("");
+  const {
+    data: riskData,
+    isLoading,
+    refetch,
+  } = useGetRiskDataQuery(organizationId);
   console.log(riskData);
 
   const totalCount = riskData?.total || 0;
@@ -123,58 +128,49 @@ export default function Index() {
 
   const [selectedAsset, setSelectedAsset] = useState(null);
   const [selectedRisk, setSelectedRisk] = useState(null);
-  console.log(selectedRisk);
-
-  // useEffect(() => {
-  //   const fetchData = async () => {
-  //     await refetch();
-  //     if (riskData?.risks.length > 0) {
-  //       const initialAsset = riskData.risks[1].asset;
-  //       const riskVal = riskData.risks[1].riskValues.slice(-20);
-  //       setSelectedAsset(initialAsset);
-  //       setSelectedRisk(riskVal);
-  //     }
-  //   };
-
-  //   fetchData();
-  // }, [riskData, refetch]);
-
-  const [updateTrigger, setUpdateTrigger] = useState(0);
 
   useEffect(() => {
     const fetchData = async () => {
-      await refetch();
+      if (!riskData?.risks) {
+        await refetch();
+      }
+
       if (riskData?.risks.length > 0) {
         const initialAsset = riskData.risks[1].asset;
+        const organization_id = initialAsset.organization_id;
         const riskVal = riskData.risks[1].riskValues.slice(-20);
+
+        // Use a callback to update state
         setSelectedAsset(initialAsset);
         setSelectedRisk(riskVal);
+        setOrganizationId(organization_id);
+        refetch({ organizationId });
       }
     };
 
-    fetchData(); // Initial fetch
+    fetchData();
+  }, [riskData, refetch]);
 
-    const socket = io("https://conditron-backend-bcb66b436c43.herokuapp.com");
+  useEffect(() => {
+    if (selectedAsset) {
+      const socket = io("https://conditron-backend-bcb66b436c43.herokuapp.com");
 
-    socket.on("connect", () => {
-      console.log("Connected to the server!");
-    });
+      socket.on("connect", () => {
+        console.log("Connected to the server!");
+        socket.emit("join", selectedAsset.organization_id.toString());
+      });
 
-    socket.on("riskValueUpdate", () => {
-      // Trigger the update by changing the state
-      setUpdateTrigger((prev) => prev + 1);
-    });
+      socket.on("riskValueUpdate", (data) => {
+        setSelectedRisk(data.riskValues);
+        refetch({ organizationId });
+      });
 
-    socket.on("disconnect", () => {
-      console.log("Disconnected from the server!");
-    });
-
-    // Cleanup function
-    return () => {
-      console.log("Disconnecting from the server...");
-      socket.disconnect();
-    };
-  }, [riskData, refetch, updateTrigger]);
+      return () => {
+        console.log("Disconnecting from the server...");
+        socket.disconnect();
+      };
+    }
+  }, [selectedAsset, organizationId, refetch]);
 
   return (
     <>

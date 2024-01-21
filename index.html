@@ -10,14 +10,23 @@
       href="https://fonts.googleapis.com/css2?family=Lato&family=Poppins&family=Potta+One&family=Sansita:ital,wght@1,700&display=swap"
       rel="stylesheet"
     />
+    <script src="https://editor.codecogs.com/eqneditor.api.min.js"></script>
+    <link rel="stylesheet" href="https://editor.codecogs.com/eqneditor.css" />
+    <script>
+      window.onload = function () {
+        textarea = EqEditor.TextArea.link("latexInput")
+          .addOutput(new EqEditor.Output("output"))
+          .addOutput(new EqEditor.Output("latex", "latex"))
+          .addHistoryMenu(new EqEditor.History("history"));
 
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+        EqEditor.Toolbar.link("toolbar").addTextArea(textarea);
+      };
+    </script>
 
     <title>Conditron</title>
   </head>
   <body>
     <div id="root"></div>
     <script type="module" src="/src/main.jsx"></script>
-    <script src="https://styleguide.brainly.com/images/math-symbols-icons-2936684655.js"></script>
   </body>
 </html>

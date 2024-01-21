@@ -10,7 +10,7 @@ export const riskApiSlice = apiSlice.injectEndpoints({
         method: "GET",
       }),
       providesTags: ["Risk"],
-      subscribe: (query, { subscriptionHooks, dispatch }) => {
+      subscribe: (query, { subscriptionHooks, dispatch }, orgId) => {
         const { useGetRiskDataQuery } = subscriptionHooks;
 
         // Connect to socket.io server
@@ -20,6 +20,7 @@ export const riskApiSlice = apiSlice.injectEndpoints({
 
         socket.on("connect", () => {
           console.log("Connected to the server!");
+          socket.emit("join", orgId);
         });
 
         socket.on("riskValueUpdate", (data) => {
