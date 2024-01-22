@@ -39,7 +39,7 @@ function Mobile() {
           <div className="d-flex flex-column align-items-start pt-4">
             <NavLink
               to={routes.DASHBOARD}
-              exact
+              exact="true"
               activeclassname="active"
               className="menu-links me-5 pb-3"
             >
@@ -59,7 +59,7 @@ function Mobile() {
               <>
                 <NavLink
                   to={routes.ASSETS}
-                  exact
+                  exact="true"
                   activeclassname="active"
                   className="menu-links me-5 pb-3"
                 >
@@ -76,7 +76,7 @@ function Mobile() {
                 </NavLink>
                 <NavLink
                   to={routes.VARIABLES}
-                  exact
+                  exact="true"
                   activeclassname="active"
                   className="menu-links me-5 pb-3"
                 >
@@ -94,7 +94,7 @@ function Mobile() {
 
                 <NavLink
                   to={routes.CENSORS}
-                  exact
+                  exact="true"
                   activeclassname="active"
                   className="menu-links me-5 pb-3"
                 >
@@ -111,7 +111,7 @@ function Mobile() {
                 </NavLink>
                 <NavLink
                   to={routes.MODELS}
-                  exact
+                  exact="true"
                   activeclassname="active"
                   className="menu-links me-5 pb-3"
                 >
@@ -128,7 +128,7 @@ function Mobile() {
                 </NavLink>
                 <NavLink
                   to={routes.RISK_ANALYSIS}
-                  exact
+                  exact="true"
                   activeclassname="active"
                   className="menu-links me-5 pb-3"
                 >
@@ -145,7 +145,7 @@ function Mobile() {
                 </NavLink>
                 <NavLink
                   to={routes.DOCS_CENTER}
-                  exact
+                  exact="true"
                   activeclassname="active"
                   className="menu-links me-5 pb-3"
                 >
@@ -162,7 +162,7 @@ function Mobile() {
                 </NavLink>
                 <NavLink
                   to={routes.SETTINGS}
-                  exact
+                  exact="true"
                   activeclassname="active"
                   className="menu-links me-5 pb-3"
                 >
@@ -182,7 +182,7 @@ function Mobile() {
               <>
                 <NavLink
                   to={routes.ORGANIZATIONS}
-                  exact
+                  exact="true"
                   activeclassname="active"
                   className="menu-links me-5 pb-3"
                 >

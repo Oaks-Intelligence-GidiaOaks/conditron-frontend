@@ -24,8 +24,6 @@ function Menu() {
     setPathName(location.pathname);
   }, [location]);
 
-  console.log(pathname, "path");
-
   const dispatch = useDispatch();
 
   const logout = () => {
@@ -44,7 +42,7 @@ function Menu() {
                 <>
                   <NavLink
                     to={routes.DASHBOARD}
-                    exact
+                    exact="true"
                     activeclassname="active"
                     className="menu-links me-4"
                   >
@@ -61,7 +59,7 @@ function Menu() {
                   </NavLink>
                   <NavLink
                     to={routes.VARIABLES}
-                    exact
+                    exact="true"
                     activeclassname="active"
                     className="menu-links me-4"
                   >
@@ -79,7 +77,7 @@ function Menu() {
 
                   <NavLink
                     to={routes.CENSORS}
-                    exact
+                    exact="true"
                     activeclassname="active"
                     className="menu-links me-4"
                   >
@@ -96,7 +94,7 @@ function Menu() {
                   </NavLink>
                   <NavLink
                     to={routes.MODELS}
-                    exact
+                    exact="true"
                     activeclassname="active"
                     className="menu-links me-4"
                   >
@@ -113,7 +111,7 @@ function Menu() {
                   </NavLink>
                   <NavLink
                     to={routes.ASSETS}
-                    exact
+                    exact="true"
                     activeclassname="active"
                     className="menu-links me-4"
                   >
@@ -130,7 +128,7 @@ function Menu() {
                   </NavLink>
                   <NavLink
                     to={routes.RISK_ANALYSIS}
-                    exact
+                    exact="true"
                     activeclassname="active"
                     className="menu-links me-4"
                   >
@@ -147,7 +145,7 @@ function Menu() {
                   </NavLink>
                   <NavLink
                     to={routes.DOCS_CENTER}
-                    exact
+                    exact="true"
                     activeclassname="active"
                     className="menu-links me-4"
                   >
@@ -164,7 +162,7 @@ function Menu() {
                   </NavLink>
                   <NavLink
                     to={routes.SETTINGS}
-                    exact
+                    exact="true"
                     activeclassname="active"
                     className="menu-links me-4"
                   >
@@ -184,7 +182,7 @@ function Menu() {
                 <>
                   <NavLink
                     to={routes.DASHBOARD}
-                    exact
+                    exact="true"
                     activeclassname="active"
                     className="menu-links me-4"
                   >
@@ -202,7 +200,7 @@ function Menu() {
 
                   <NavLink
                     to={routes.ORGANIZATIONS}
-                    exact
+                    exact="true"
                     activeclassname="active"
                     className="menu-links me-4"
                   >

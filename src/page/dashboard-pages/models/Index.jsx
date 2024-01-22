@@ -9,7 +9,7 @@ import { IoIosArrowForward, IoIosArrowBack } from "react-icons/io";
 import { BsChevronDoubleRight, BsChevronDoubleLeft } from "react-icons/bs";
 import { Filter } from "../../../blocks/organization-block/Filter";
 import { ClipLoader } from "react-spinners";
-import React, { useMemo, useState, useEffect } from "react";
+import React, { useMemo, useState, useEffect, useRef } from "react";
 import { CiMenuKebab } from "react-icons/ci";
 import "bootstrap/dist/js/bootstrap.bundle.min.js";
 import {
@@ -27,8 +27,6 @@ import rtkMutation from "../../../utils/rtkMutation";
 import Select from "react-select";
 import { FiToggleLeft, FiToggleRight } from "react-icons/fi";
 import { LuClipboardEdit } from "react-icons/lu";
-// import { AiOutlineDeleteRow } from "react-icons/ai";
-// import { MathsQuill } from "../../../components/widget";
 import Swal from "sweetalert2";
 import { MathJax, MathJaxContext } from "better-react-mathjax";
 
@@ -131,12 +129,6 @@ function Index() {
   const [variableMap, setVariableMap] = useState([]);
 
   const [errors, setErrors] = useState(null);
-
-  function InsertSymbol(symbol) {
-    console.log(symbol);
-    setEquation((prevEquation) => prevEquation + symbol);
-    setErrors(null);
-  }
 
   const validateEquation = (equation, variableMap) => {
     const variableNames = variableMap.map((variable) => variable.alias);
@@ -415,13 +407,64 @@ function Index() {
     if (window.textarea) {
       const latexElement = document.getElementById("latex");
       const latexContent = latexElement?.textContent || latexElement?.innerText;
-      const cleanContent = latexContent.match(/\[(.*?)\]/)[1];
+      // const cleanContent = latexContent.match(/\[(.*?)\]/)[1];
       console.log(latexContent);
       setEquation(latexContent);
     } else {
       console.error("Textarea is not defined.");
     }
   };
+
+  const inputRef = useRef(null);
+
+  useEffect(() => {
+    const loadExternalScript = () => {
+      // Create a script element
+      const script = document.createElement("script");
+
+      // Set the script source URL
+      script.src = "/js/eqneditor.api.min.js";
+
+      // Set the script type
+      script.type = "text/javascript";
+
+      // Append the script to the document body
+      document.body.appendChild(script);
+
+      // Cleanup: Remove the script when the component unmounts
+      return () => {
+        document.body.removeChild(script);
+      };
+    };
+
+    const initializeEqEditor = () => {
+      if (inputRef.current) {
+        const textarea = EqEditor.TextArea.link("latexInput")
+          .addOutput(new EqEditor.Output("output"))
+          .addOutput(new EqEditor.Output("latex", "latex"))
+          .addHistoryMenu(new EqEditor.History("history"));
+
+        EqEditor.Toolbar.link("toolbar").addTextArea(textarea);
+      } else {
+        console.log('Element with ID "latexInput" not found');
+      }
+    };
+
+    // Load the external script
+    loadExternalScript();
+
+    // Wait for the script to be loaded, then initialize EqEditor
+    const scriptLoadInterval = setInterval(() => {
+      if (window.EqEditor) {
+        clearInterval(scriptLoadInterval);
+        initializeEqEditor();
+      }
+    }, 100);
+
+    return () => {
+      clearInterval(scriptLoadInterval); // Clean up the interval on component unmount
+    };
+  }, []);
 
   return (
     <>
@@ -735,6 +778,7 @@ function Index() {
                         <div id="toolbar"></div>
                         <div
                           id="latexInput"
+                          ref={inputRef}
                           placeholder="Write Equation here..."
                         ></div>
                         <div id="equation-output">
