@@ -8,7 +8,7 @@ const AutoLogout = () => {
   const dispatch = useDispatch();
   const [lastActivityTime, setLastActivityTime] = useState(Date.now());
 
-  const user = useSelector((state) => state.user.user);
+  const user = useSelector((state) => state.user?.user);
 
   const handleUserActivity = () => {
     setLastActivityTime(Date.now());
