@@ -230,6 +230,9 @@ function Register() {
                 </div>
               </div>
             </div>
+            <div className="text-center pt-4">
+              <p> copyright &copy; 2024 of stellarsat. All rights reserved.</p>
+            </div>
           </div>
         </div>
       </section>

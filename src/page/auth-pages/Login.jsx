@@ -190,6 +190,9 @@ function Login() {
             </div>
           </div>
         </div>
+        <div className="text-center">
+          <p> copyright &copy; 2024 of stellarsat. All rights reserved.</p>
+        </div>
       </section>
     </>
   );
