@@ -12,6 +12,7 @@ import rtkMutation from "../../utils/rtkMutation";
 import { formatErrorResponse } from "../../utils/formatErrorResponse";
 import validate from "validate.js";
 import { showAlert } from "../../static/alert";
+import { stelasat_logo, stelasat_logo_sm } from "../../assets";
 
 const constraints = {
   email: {
@@ -190,8 +191,21 @@ function Login() {
             </div>
           </div>
         </div>
-        <div className="text-center">
-          <p> copyright &copy; 2024 of stellarsat. All rights reserved.</p>
+        <div className="text-center pt-4 pb-3">
+          <p className="text-sm mb-0">
+            A product of{" "}
+            <span style={{ backgroundColor: "#2F4F4F", padding: "5px" }}>
+              <img
+                src={stelasat_logo}
+                alt="Stelasat Logo"
+                // width={25}
+                height={25}
+              />
+            </span>
+          </p>
+          <p className="text-center text-sm">
+            Copyright &copy; Stellarsat Limited 2024. All rights reserved.
+          </p>
         </div>
       </section>
     </>

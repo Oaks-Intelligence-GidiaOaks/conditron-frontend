@@ -43,3 +43,5 @@ export const model = `${PATH}/model.svg`;
 export const censor_active = `${PATH}/censor-active.svg`;
 export const censor = `${PATH}/censor.svg`;
 export const img_box = `${PATH}/img-box.svg`;
+export const stelasat_logo = `${PATH}/stelasat.png`;
+export const stelasat_logo_sm = `${PATH}/stelasat_logo_sm.png`;
