@@ -139,7 +139,7 @@ function Index() {
     );
 
     console.log(allVariablesReferenced);
-    console.log(equation);
+    console.log(equation, "TRUE");
 
     const extractVariables = (equation) => {
       const uniqueMatches = [...new Set(equation.match(/[A-Z]+\d+/g) || [])];
@@ -404,15 +404,15 @@ function Index() {
   }, [refetch, pageIndex, pageSize]);
 
   const handleButtonClick = () => {
-    if (window.textarea) {
-      const latexElement = document.getElementById("latex");
-      const latexContent = latexElement?.textContent || latexElement?.innerText;
-      // const cleanContent = latexContent.match(/\[(.*?)\]/)[1];
-      console.log(latexContent);
-      setEquation(latexContent);
-    } else {
-      console.error("Textarea is not defined.");
-    }
+    // if (window.textarea) {
+    const latexElement = document.getElementById("latex");
+    const latexContent = latexElement?.textContent || latexElement?.innerText;
+    // const cleanContent = latexContent.match(/\[(.*?)\]/)[1];
+    console.log(latexContent, "CONTENT");
+    setEquation(latexContent);
+    // } else {
+    console.error("Textarea is not defined.");
+    // }
   };
 
   const inputRef = useRef(null);
