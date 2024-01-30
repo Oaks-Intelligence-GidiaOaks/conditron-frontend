@@ -57,6 +57,8 @@ function Login() {
     setShowPassword(!showPassword);
   };
 
+  const currentYear = new Date().getFullYear();
+
   return (
     <>
       <section className="bg-auth-small">
@@ -204,7 +206,8 @@ function Login() {
             </span>
           </p>
           <p className="text-center text-sm">
-            Copyright &copy; Stellarsat Limited 2024. All rights reserved.
+            Copyright &copy; Stellarsat Limited {currentYear}. All rights
+            reserved.
           </p>
         </div>
       </section>

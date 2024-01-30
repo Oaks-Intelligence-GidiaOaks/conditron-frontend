@@ -42,6 +42,7 @@ function Register() {
   const validateForm = (values) => {
     return validate(values, constraints) || {};
   };
+  const currentYear = new Date().getFullYear();
 
   return (
     <>
@@ -244,7 +245,8 @@ function Register() {
                 </span>
               </p>
               <p className="text-center text-sm">
-                Copyright &copy; Stellarsat Limited 2024. All rights reserved.
+                Copyright &copy; Stellarsat Limited {currentYear}. All rights
+                reserved.
               </p>
             </div>
           </div>

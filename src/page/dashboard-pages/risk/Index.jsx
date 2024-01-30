@@ -131,11 +131,11 @@ export default function Index() {
     if (riskData?.risks.length > 0) {
       const initialAsset = riskData.risks[0].asset;
       const riskVal = riskData.risks[0].riskValues.slice(-20);
+      refetch();
 
       // Use a callback to update state
       setSelectedAsset(initialAsset);
       setSelectedRisk(riskVal);
-      refetch();
     }
   }, [riskData, refetch]);
 
