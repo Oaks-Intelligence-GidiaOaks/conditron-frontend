@@ -25,6 +25,7 @@ export const riskApiSlice = apiSlice.injectEndpoints({
         // Connect to socket.io server
         const socket = io(
           "https://conditron-backend-bcb66b436c43.herokuapp.com"
+          // "http://localhost:5001"
         );
 
         socket.on("connect", () => {
@@ -45,6 +46,9 @@ export const riskApiSlice = apiSlice.injectEndpoints({
 
           dispatch(transformedData);
           query.invalidateTags(["Risk"]);
+
+          // Trigger refetch when riskValueUpdate event is received
+          query.refetch();
         });
 
         socket.on("disconnect", () => {

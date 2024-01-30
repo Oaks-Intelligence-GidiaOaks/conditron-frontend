@@ -11,7 +11,6 @@ import BarChartExample from "../../../utils/BarChartExample";
 import QuarterlyChart from "../../../utils/QuarterlyChart";
 import HeatmapChart from "../../../utils/HeatmapChart";
 import LineChartExample from "../../../utils/LineChartExample";
-import io from "socket.io-client";
 
 export default function Index() {
   const { data: riskData, isLoading, refetch } = useGetRiskDataQuery();
@@ -125,22 +124,15 @@ export default function Index() {
   const [selectedRisk, setSelectedRisk] = useState(null);
 
   useEffect(() => {
-    const fetchData = async () => {
-      if (!riskData?.risks) {
-        await refetch();
-      }
+    if (riskData?.risks.length > 0) {
+      const initialAsset = riskData.risks[0].asset;
+      const riskVal = riskData.risks[0].riskValues.slice(-20);
+      refetch();
 
-      if (riskData?.risks.length > 0) {
-        const initialAsset = riskData.risks[1].asset;
-        const riskVal = riskData.risks[1].riskValues.slice(-20);
-
-        // Use a callback to update state
-        setSelectedAsset(initialAsset);
-        setSelectedRisk(riskVal);
-      }
-    };
-
-    fetchData();
+      // Use a callback to update state
+      setSelectedAsset(initialAsset);
+      setSelectedRisk(riskVal);
+    }
   }, [riskData, refetch]);
 
   return (
