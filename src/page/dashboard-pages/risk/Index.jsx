@@ -11,9 +11,13 @@ import BarChartExample from "../../../utils/BarChartExample";
 import QuarterlyChart from "../../../utils/QuarterlyChart";
 import HeatmapChart from "../../../utils/HeatmapChart";
 import LineChartExample from "../../../utils/LineChartExample";
+import { useSelector } from "react-redux";
 
 export default function Index() {
-  const { data: riskData, isLoading, refetch } = useGetRiskDataQuery();
+  const orgId = useSelector((state) => state.user?.user?.organization_id?._id);
+  // console.log(orgId);
+
+  const { data: riskData, isLoading, refetch } = useGetRiskDataQuery(orgId);
   console.log(riskData);
 
   const totalCount = riskData?.total || 0;
@@ -127,11 +131,11 @@ export default function Index() {
     if (riskData?.risks.length > 0) {
       const initialAsset = riskData.risks[0].asset;
       const riskVal = riskData.risks[0].riskValues.slice(-20);
-      refetch();
 
       // Use a callback to update state
       setSelectedAsset(initialAsset);
       setSelectedRisk(riskVal);
+      refetch();
     }
   }, [riskData, refetch]);
 

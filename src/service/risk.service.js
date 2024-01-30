@@ -1,64 +1,53 @@
 import { RISK_ANALYSIS } from "./constants";
 import apiSlice from "./api/apiSlice";
 import io from "socket.io-client";
-import { useSelector } from "react-redux";
 
 export const riskApiSlice = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
     getRiskData: builder.query({
+      providesTags: ["Risk"],
       query: () => ({
         url: RISK_ANALYSIS,
         method: "GET",
       }),
-      providesTags: ["Risk"],
-      subscribe: (query, { subscriptionHooks, dispatch }) => {
-        const { useGetRiskDataQuery } = subscriptionHooks;
+      transformResponse: (response) => {
+        return response;
+      },
+      onCacheEntryAdded: async (
+        orgId,
+        { updateCachedData, cacheDataLoaded, cacheEntryRemoved }
+      ) => {
+        // connect to socket
+        const ws = io("https://conditron-backend-bcb66b436c43.herokuapp.com");
 
-        const useOrgId = () => {
-          const orgId = useSelector(
-            (state) => state.user?.user?.organization_id?._id
-          );
-          console.log(orgId);
-          return orgId;
-        };
-
-        // Connect to socket.io server
-        const socket = io(
-          "https://conditron-backend-bcb66b436c43.herokuapp.com"
-          // "http://localhost:5001"
-        );
-
-        socket.on("connect", () => {
-          console.log("Connected to the server!");
-          const orgId = useOrgId();
-          socket.emit("join", orgId);
+        // User id join connection
+        ws.on("connect", () => {
+          ws.emit("join", orgId);
+          console.log("connected!");
         });
 
-        socket.on("riskValueUpdate", (data) => {
-          const riskDataQuery = useGetRiskDataQuery();
-          console.log("Received riskValueUpdate event:", data);
-          console.log("Current riskDataQuery:", riskDataQuery);
+        try {
+          // wait till cache is populated for first request
+          await cacheDataLoaded;
 
-          // Update the cache with the new data
-          const transformedData =
-            riskApiSlice.endpoints.getRiskData.transformResult(data);
-          console.log("Transformed data:", transformedData);
+          // set up listener callback for "newMessage" socket emit
+          const listener = (event) => {
+            console.log(event, "evn");
+            // update rtk cache
+            updateCachedData((data) => {
+              console.log(data);
+              data[0].risks.unshift(data);
+              return data;
+            });
+          };
 
-          dispatch(transformedData);
-          query.invalidateTags(["Risk"]);
-
-          // Trigger refetch when riskValueUpdate event is received
-          query.refetch();
-        });
-
-        socket.on("disconnect", () => {
-          console.log("Disconnected from the server!");
-        });
-
-        return () => {
-          console.log("Disconnecting from the server...");
-          socket.disconnect();
-        };
+          ws.on("riskValueUpdate", listener);
+        } catch (error) {
+          // res.undo()
+        }
+        // cleanup, close connection when cache is removed
+        await cacheEntryRemoved;
+        ws.close();
       },
     }),
   }),
