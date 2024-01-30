@@ -36,7 +36,7 @@ export const riskApiSlice = apiSlice.injectEndpoints({
             // update rtk cache
             updateCachedData((data) => {
               console.log(data);
-              data[0].risks.unshift(data);
+              data[0].risks.unshift(event);
               return data;
             });
           };
